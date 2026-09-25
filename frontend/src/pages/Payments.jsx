@@ -10,7 +10,7 @@ const Payments = () => {
     useEffect(() => {
         const fetchPayments = async () => {
             try {
-                const { data } = await axios.get('http://localhost:5000/api/student/payments', {
+                const { data } = await axios.get('https://ihfc.onrender.com/api/student/payments', {
                     headers: { Authorization: `Bearer ${user.token}` }
                 });
                 setPayments(data);

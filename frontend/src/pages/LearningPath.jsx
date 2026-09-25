@@ -10,7 +10,7 @@ const LearningPath = () => {
     useEffect(() => {
         const fetchPath = async () => {
             try {
-                const { data } = await axios.get('http://localhost:5000/api/student/learning-path', {
+                const { data } = await axios.get('https://ihfc.onrender.com/api/student/learning-path', {
                     headers: { Authorization: `Bearer ${user.token}` }
                 });
                 setPath(data);

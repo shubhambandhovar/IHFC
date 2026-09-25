@@ -9,7 +9,7 @@ const AdminPanel = () => {
     useEffect(() => {
         const fetchStudents = async () => {
             try {
-                const { data } = await axios.get('http://localhost:5000/api/admin/students', {
+                const { data } = await axios.get('https://ihfc.onrender.com/api/admin/students', {
                     headers: { Authorization: `Bearer ${user.token}` }
                 });
                 setStudents(data);
