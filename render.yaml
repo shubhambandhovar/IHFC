@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: ihfc-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: PORT
+        value: 5000
+      - key: JWT_SECRET
+        value: supersecret_ihfc_key_2026
+      - key: MONGO_URI
+        sync: false
