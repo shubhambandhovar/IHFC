@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 import { PlayCircle, CheckCircle, Video, Clock, AlertTriangle, Circle, Check } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import { useProgress } from '../context/ProgressContext';
@@ -6,6 +7,7 @@ import { fallbackModules as initialFallbackModules } from '../data/fallbackData'
 import { useSearchParams } from 'react-router-dom';
 
 const LearningResources = () => {
+    useDocumentTitle('IHFC Portal | Learning Resources');
     const { user } = useContext(AuthContext);
     const { markLessonCompleted, updateLessonProgress, getResourceProgress, getLessonStatus } = useProgress();
     const [searchParams] = useSearchParams();

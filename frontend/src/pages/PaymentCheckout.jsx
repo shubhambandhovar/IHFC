@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, CreditCard, Building2, Smartphone, AlertCircle, ShieldCheck } from 'lucide-react';
 
 const PaymentCheckout = () => {
+    useDocumentTitle('IHFC Portal | Payment');
     const navigate = useNavigate();
     const [selectedMethod, setSelectedMethod] = useState('upi');
     const [toastMessage, setToastMessage] = useState('');

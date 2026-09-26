@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 import { useNavigate } from 'react-router-dom';
 import { Download, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 
 const Payments = () => {
+    useDocumentTitle('IHFC Portal | Payments & Receipts');
     const navigate = useNavigate();
     const [generatingId, setGeneratingId] = useState(null);
     const [toastMessage, setToastMessage] = useState('');

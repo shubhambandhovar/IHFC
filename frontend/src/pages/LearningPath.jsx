@@ -1,10 +1,13 @@
 import React, { useEffect, useState, useContext } from 'react';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
+import { useProgress } from '../context/ProgressContext';
 import { CheckCircle2, Circle, PlayCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const LearningPath = () => {
+    useDocumentTitle('IHFC Portal | Learning Path');
     const [path, setPath] = useState([]);
     const { user } = useContext(AuthContext);
     const { getCoreModuleStatus, getResourceProgress } = useProgress();

@@ -1,9 +1,11 @@
 import React from 'react';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 import { useNavigate } from 'react-router-dom';
 import { fallbackModules } from '../data/fallbackData';
 import { PlayCircle, ListVideo, Video } from 'lucide-react';
 
 const CourseDetails = () => {
+    useDocumentTitle('IHFC Portal | Course Details');
     const navigate = useNavigate();
 
     // Filter out the demo module to only show official curriculum

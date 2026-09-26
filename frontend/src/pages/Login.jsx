@@ -1,8 +1,10 @@
 import React, { useState, useContext } from 'react';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+    useDocumentTitle('IHFC Portal | Login');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');

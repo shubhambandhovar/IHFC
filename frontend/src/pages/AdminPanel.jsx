@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useContext } from 'react';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { Video, Users, Save } from 'lucide-react';
 
 const AdminPanel = () => {
+    useDocumentTitle('IHFC Portal | Admin');
     const [activeTab, setActiveTab] = useState('students'); // 'students' | 'resources'
     const [students, setStudents] = useState([]);
     const [modules, setModules] = useState([]);

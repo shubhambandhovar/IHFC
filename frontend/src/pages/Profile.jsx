@@ -1,8 +1,10 @@
 import React, { useContext } from 'react';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 import { AuthContext } from '../context/AuthContext';
 import { User, Mail, Hash } from 'lucide-react';
 
 const Profile = () => {
+    useDocumentTitle('IHFC Portal | Profile');
     const { user } = useContext(AuthContext);
 
     return (

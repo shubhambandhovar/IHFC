@@ -1,7 +1,9 @@
 import React from 'react';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 import { FileText, Download } from 'lucide-react';
 
 const Documents = () => {
+    useDocumentTitle('IHFC Portal | Documents');
     const documents = [
         { id: 1, name: 'IHFC IIT Delhi Official Brochure', size: '2.4 MB', date: '01/09/2026', type: 'PDF' },
         { id: 2, name: 'Welcome Kit & Onboarding Guide', size: '1.1 MB', date: '01/09/2026', type: 'PDF' },

@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 import { AuthContext } from '../context/AuthContext';
 import { useProgress } from '../context/ProgressContext';
 import { useNavigate } from 'react-router-dom';
@@ -14,6 +15,7 @@ import {
 import { fallbackModules } from '../data/fallbackData';
 
 const Dashboard = () => {
+    useDocumentTitle('IHFC Portal | Dashboard');
     const { user } = useContext(AuthContext);
     const { isCourseStarted, courseStartDateStr, progress, getProgramProgress } = useProgress();
     const navigate = useNavigate();
