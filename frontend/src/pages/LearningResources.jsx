@@ -42,7 +42,7 @@ const LearningResources = () => {
                     instructor: 'Krish Naik',
                     published: true,
                     lessons: [
-                        { _id: 'p1', title: '01 Introduction to Python', videoProvider: 'self-hosted', videoUrl: '' },
+                        { _id: 'p1', title: '01 Introduction to Python', videoProvider: 'self-hosted', videoUrl: '/test-course-video.mp4' },
                         { _id: 'p2', title: '02 Pandas Tutorial', videoProvider: 'self-hosted', videoUrl: '' }
                     ]
                 },
@@ -214,6 +214,25 @@ const LearningResources = () => {
                             </div>
                         )}
                     </div>
+
+                    {/* Demo Warning Label */}
+                    {activeLesson?.videoUrl === '/test-course-video.mp4' && (
+                        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md">
+                            <div className="flex">
+                                <div className="flex-shrink-0">
+                                    <AlertTriangle className="h-5 w-5 text-yellow-400" />
+                                </div>
+                                <div className="ml-3">
+                                    <p className="text-sm text-yellow-700 font-bold uppercase tracking-wide">
+                                        Demo Video — Not Official Course Content
+                                    </p>
+                                    <p className="text-xs text-yellow-600 mt-1">
+                                        This is a playable test video for development purposes. It will be replaced once the authorized video URL is supplied.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Lesson Library */}
                     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col flex-1 min-h-[300px]">
