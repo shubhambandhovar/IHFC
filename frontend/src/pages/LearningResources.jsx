@@ -16,46 +16,23 @@ const LearningResources = () => {
     const videoRef = useRef(null);
 
     useEffect(() => {
-        const fetchModules = async () => {
-            try {
-                const { data } = await axios.get('https://ihfc.onrender.com/api/learning/modules', {
-                    headers: { Authorization: `Bearer ${user.token}` }
-                });
-                
-                if (data && data.length > 0) {
-                    setModules(data);
-                    const targetModuleId = searchParams.get('module');
-                    const initialModule = targetModuleId 
-                        ? data.find(m => m._id === targetModuleId) || data[0]
-                        : data[0];
-                        
-                    setActiveModule(initialModule);
-                    if (initialModule.lessons?.length > 0) setActiveLesson(initialModule.lessons[0]);
-                } else {
-                    loadFallback();
-                }
-            } catch (error) {
-                console.error("Failed to fetch modules", error);
-                loadFallback();
-            } finally {
-                setLoading(false);
-            }
-        };
+        const targetModuleId = searchParams.get('module');
+        
+        // Use the newly generated fallbackData as the absolute source of truth 
+        // because it contains the fully parsed YouTube playlists
+        setModules(initialFallbackModules);
+        
+        const initialModule = targetModuleId 
+            ? initialFallbackModules.find(m => m._id === targetModuleId) || initialFallbackModules[0]
+            : initialFallbackModules[0];
 
-        const loadFallback = () => {
-            setModules(initialFallbackModules);
-            
-            const targetModuleId = searchParams.get('module');
-            const initialModule = targetModuleId 
-                ? initialFallbackModules.find(m => m._id === targetModuleId) || initialFallbackModules[0]
-                : initialFallbackModules[0];
-
-            setActiveModule(initialModule);
-            if (initialModule.lessons?.length > 0) setActiveLesson(initialModule.lessons[0]);
-        };
-
-        fetchModules();
-    }, [user.token, searchParams]);
+        setActiveModule(initialModule);
+        if (initialModule?.lessons?.length > 0) {
+            setActiveLesson(initialModule.lessons[0]);
+        }
+        
+        setLoading(false);
+    }, [searchParams]);
 
     const handleSelectModule = (mod) => {
         setActiveModule(mod);
