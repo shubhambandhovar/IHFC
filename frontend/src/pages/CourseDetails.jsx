@@ -58,6 +58,21 @@ const CourseDetails = () => {
                         </div>
                     </div>
                 </div>
+
+                <div className="mt-10 border-t pt-8">
+                    <h3 className="text-2xl font-bold mb-6 text-gray-900">Course Video Lectures</h3>
+                    <div className="aspect-video w-full rounded-xl overflow-hidden shadow-lg border border-gray-100 bg-black">
+                        <iframe 
+                            width="100%" 
+                            height="100%" 
+                            src="https://www.youtube.com/embed/videoseries?list=PLEiEAq2VkUULyr_ftxpHB6DumOq1Zz2hq" 
+                            title="Course Video Playlist" 
+                            frameBorder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowFullScreen
+                        ></iframe>
+                    </div>
+                </div>
             </div>
         </div>
     );
