@@ -61,16 +61,79 @@ const CourseDetails = () => {
 
                 <div className="mt-10 border-t pt-8">
                     <h3 className="text-2xl font-bold mb-6 text-gray-900">Course Video Lectures</h3>
-                    <div className="aspect-video w-full rounded-xl overflow-hidden shadow-lg border border-gray-100 bg-black">
-                        <iframe 
-                            width="100%" 
-                            height="100%" 
-                            src="https://www.youtube.com/embed/videoseries?list=PLEiEAq2VkUULyr_ftxpHB6DumOq1Zz2hq" 
-                            title="Course Video Playlist" 
-                            frameBorder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowFullScreen
-                        ></iframe>
+                    
+                    {/* Custom Video Player Layout */}
+                    <div className="flex flex-col lg:flex-row gap-6">
+                        
+                        {/* Video Player (Left Side) */}
+                        <div className="lg:w-2/3">
+                            <div className="aspect-video w-full rounded-xl overflow-hidden shadow-lg border border-gray-100 bg-black relative">
+                                <iframe 
+                                    className="absolute top-0 left-0 w-full h-full"
+                                    src="https://www.youtube.com/embed/JMUxmLyrhSk?modestbranding=1&rel=0&showinfo=0" 
+                                    title="Active Video" 
+                                    frameBorder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowFullScreen
+                                ></iframe>
+                            </div>
+                            <h4 className="text-xl font-bold mt-4 text-gray-900">1. What Is AI? | Artificial Intelligence In 5 Mins</h4>
+                            <p className="text-gray-500 text-sm mt-1">Simplilearn • 5:28</p>
+                        </div>
+
+                        {/* Video List (Right Side) */}
+                        <div className="lg:w-1/3 bg-gray-50 rounded-xl border border-gray-200 overflow-hidden flex flex-col h-[450px]">
+                            <div className="bg-white border-b px-4 py-3 font-bold text-gray-800 shadow-sm z-10">
+                                Course Curriculum
+                            </div>
+                            <div className="overflow-y-auto flex-1 p-2 space-y-2">
+                                
+                                {/* Active Item */}
+                                <div className="flex items-start gap-3 p-3 rounded-lg bg-ihfcOrange/10 border border-ihfcOrange/20 cursor-pointer transition-colors">
+                                    <div className="mt-1 text-ihfcOrange">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+                                    </div>
+                                    <div>
+                                        <h5 className="font-semibold text-gray-900 text-sm">1. What Is AI? | Artificial Intelligence In 5 Mins</h5>
+                                        <p className="text-xs text-ihfcOrange font-medium mt-1">Playing • 5:28</p>
+                                    </div>
+                                </div>
+
+                                {/* Inactive Item */}
+                                <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors">
+                                    <div className="mt-1 text-gray-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+                                    </div>
+                                    <div>
+                                        <h5 className="font-medium text-gray-700 text-sm hover:text-gray-900">2. Machine Learning Basics Explained</h5>
+                                        <p className="text-xs text-gray-500 mt-1">10:15</p>
+                                    </div>
+                                </div>
+
+                                {/* Inactive Item */}
+                                <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors">
+                                    <div className="mt-1 text-gray-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+                                    </div>
+                                    <div>
+                                        <h5 className="font-medium text-gray-700 text-sm hover:text-gray-900">3. Deep Learning Neural Networks</h5>
+                                        <p className="text-xs text-gray-500 mt-1">14:20</p>
+                                    </div>
+                                </div>
+                                
+                                {/* Inactive Item */}
+                                <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors">
+                                    <div className="mt-1 text-gray-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+                                    </div>
+                                    <div>
+                                        <h5 className="font-medium text-gray-700 text-sm hover:text-gray-900">4. Generative AI and LLMs Tutorial</h5>
+                                        <p className="text-xs text-gray-500 mt-1">18:45</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
