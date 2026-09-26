@@ -50,6 +50,16 @@ const LearningResources = () => {
                 const fallbackModules = [
                     {
                         _id: '1',
+                        title: 'Python & Data Science',
+                        instructor: 'Krish Naik',
+                        published: true,
+                        lessons: [
+                            { _id: 'p1', title: '01 Introduction to Python', videoProvider: 'self-hosted', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4' },
+                            { _id: 'p2', title: '02 Pandas Tutorial', videoProvider: 'self-hosted', videoUrl: '' }
+                        ]
+                    },
+                    {
+                        _id: '2',
                         title: 'Machine Learning',
                         instructor: 'Krish Naik',
                         published: true,
@@ -58,6 +68,51 @@ const LearningResources = () => {
                             { _id: 'l2', title: '02 Linear Regression', videoProvider: 'self-hosted', videoUrl: '' },
                             { _id: 'l3', title: '03 Logistic Regression', videoProvider: 'self-hosted', videoUrl: '' },
                             { _id: 'l4', title: '04 Decision Trees', videoProvider: 'self-hosted', videoUrl: '' },
+                        ]
+                    },
+                    {
+                        _id: '3',
+                        title: 'Deep Learning',
+                        instructor: 'Krish Naik',
+                        published: true,
+                        lessons: [
+                            { _id: 'd1', title: '01 Neural Networks', videoProvider: 'self-hosted', videoUrl: '' }
+                        ]
+                    },
+                    {
+                        _id: '4',
+                        title: 'Generative AI',
+                        instructor: 'Simplilearn',
+                        published: true,
+                        lessons: [
+                            { _id: 'g1', title: '01 Generative AI Full Course', videoProvider: 'self-hosted', videoUrl: '' }
+                        ]
+                    },
+                    {
+                        _id: '5',
+                        title: 'Advanced Generative AI / LangChain',
+                        instructor: 'CampusX',
+                        published: true,
+                        lessons: [
+                            { _id: 'ag1', title: '01 LangChain Introduction', videoProvider: 'self-hosted', videoUrl: '' }
+                        ]
+                    },
+                    {
+                        _id: '6',
+                        title: 'RAG & AI Agents',
+                        instructor: 'Industry Experts',
+                        published: true,
+                        lessons: [
+                            { _id: 'r1', title: '01 RAG Basics', videoProvider: 'self-hosted', videoUrl: '' }
+                        ]
+                    },
+                    {
+                        _id: '7',
+                        title: 'Natural Language Processing',
+                        instructor: 'Krish Naik',
+                        published: true,
+                        lessons: [
+                            { _id: 'n1', title: '01 Text Preprocessing', videoProvider: 'self-hosted', videoUrl: '' }
                         ]
                     }
                 ];
@@ -171,7 +226,6 @@ const LearningResources = () => {
                                 onTimeUpdate={handleTimeUpdate}
                                 onEnded={handleVideoEnded}
                                 src={activeLesson.videoUrl}
-                                autoPlay
                             >
                                 <source src={activeLesson.videoUrl} type="video/mp4" />
                                 Your browser does not support the video tag.
