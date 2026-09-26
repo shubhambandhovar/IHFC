@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { PlayCircle, CheckCircle, Video, Clock, AlertTriangle } from 'lucide-react';
+import { PlayCircle, CheckCircle, Video, Clock, AlertTriangle, Youtube } from 'lucide-react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
+import { fallbackModules as initialFallbackModules } from '../data/fallbackData';
 
 const LearningResources = () => {
     const { user } = useContext(AuthContext);
@@ -35,51 +36,9 @@ const LearningResources = () => {
         };
 
         const loadFallback = () => {
-            const fallbackModules = [
-                {
-                    _id: '1',
-                    title: 'Python & Data Science',
-                    instructor: 'Krish Naik',
-                    published: true,
-                    lessons: [
-                        { _id: 'p1', title: '01 Introduction to Python', videoProvider: 'self-hosted', videoUrl: '/test-course-video.mp4' },
-                        { _id: 'p2', title: '02 Pandas Tutorial', videoProvider: 'self-hosted', videoUrl: '' }
-                    ]
-                },
-                {
-                    _id: '2',
-                    title: 'Machine Learning',
-                    instructor: 'Krish Naik',
-                    published: true,
-                    lessons: [
-                        { _id: 'l1', title: '01 Introduction to Machine Learning', videoProvider: 'self-hosted', videoUrl: '' },
-                        { _id: 'l2', title: '02 Linear Regression', videoProvider: 'self-hosted', videoUrl: '' },
-                        { _id: 'l3', title: '03 Logistic Regression', videoProvider: 'self-hosted', videoUrl: '' },
-                        { _id: 'l4', title: '04 Decision Trees', videoProvider: 'self-hosted', videoUrl: '' },
-                    ]
-                },
-                {
-                    _id: '3',
-                    title: 'Deep Learning',
-                    instructor: 'Krish Naik',
-                    published: true,
-                    lessons: [
-                        { _id: 'd1', title: '01 Neural Networks', videoProvider: 'self-hosted', videoUrl: '' }
-                    ]
-                },
-                {
-                    _id: '4',
-                    title: 'Generative AI',
-                    instructor: 'Simplilearn',
-                    published: true,
-                    lessons: [
-                        { _id: 'g1', title: '01 Generative AI Full Course', videoProvider: 'self-hosted', videoUrl: '' }
-                    ]
-                }
-            ];
-            setModules(fallbackModules);
-            setActiveModule(fallbackModules[0]);
-            setActiveLesson(fallbackModules[0].lessons[0]);
+            setModules(initialFallbackModules);
+            setActiveModule(initialFallbackModules[0]);
+            setActiveLesson(initialFallbackModules[0].lessons[0]);
         };
 
         fetchModules();
@@ -93,10 +52,14 @@ const LearningResources = () => {
     const handleSelectLesson = (lesson) => {
         setVideoError(false);
         setActiveLesson(lesson);
-        trackProgress(lesson._id, false, 0);
+        // Only track real course content progress
+        if (!lesson.isDemo) {
+            trackProgress(lesson._id, false, 0);
+        }
     };
 
     const trackProgress = async (lessonId, completed, position) => {
+        if (activeLesson?.isDemo) return; // Do not track demo video
         try {
             await axios.post('https://ihfc.onrender.com/api/learning/progress', 
                 { lessonId, moduleId: activeModule._id, completed, playbackPosition: position },
@@ -108,7 +71,7 @@ const LearningResources = () => {
     };
 
     const handleTimeUpdate = () => {
-        if (!videoRef.current || !activeLesson) return;
+        if (!videoRef.current || !activeLesson || activeLesson.isDemo) return;
         if (Math.floor(videoRef.current.currentTime) % 10 === 0) {
             trackProgress(activeLesson._id, false, videoRef.current.currentTime);
         }
@@ -116,7 +79,9 @@ const LearningResources = () => {
 
     const handleVideoEnded = () => {
         if (!activeLesson) return;
-        trackProgress(activeLesson._id, true, videoRef.current.currentTime);
+        if (!activeLesson.isDemo) {
+            trackProgress(activeLesson._id, true, videoRef.current.currentTime);
+        }
         const currentIndex = activeModule.lessons.findIndex(l => l._id === activeLesson._id);
         if (currentIndex !== -1 && currentIndex < activeModule.lessons.length - 1) {
             setActiveLesson(activeModule.lessons[currentIndex + 1]);
@@ -131,8 +96,10 @@ const LearningResources = () => {
     if (loading) return <div className="p-8">Loading course architecture...</div>;
     if (!modules.length) return <div className="p-8">No learning resources available yet.</div>;
 
-    const completedLessons = 1;
-    const totalLessons = activeModule.lessons?.length || 1;
+    // Filter out demo lessons for completion calculations
+    const realLessons = activeModule.lessons?.filter(l => !l.isDemo) || [];
+    const totalLessons = realLessons.length || 1;
+    const completedLessons = 0; // To be pulled from user progress state later
     const progressPercent = Math.round((completedLessons / totalLessons) * 100);
 
     return (
@@ -169,13 +136,16 @@ const LearningResources = () => {
                             <div className="bg-ihfcOrange h-2.5 rounded-full" style={{ width: `${progressPercent}%` }}></div>
                         </div>
                         <p className="text-xs text-gray-500 font-medium">{completedLessons} / {totalLessons} lessons completed ({progressPercent}%)</p>
+                        {activeModule.lessons?.some(l => l.isDemo) && (
+                            <p className="text-[10px] text-gray-400 mt-1 italic">*Demo lessons are not tracked</p>
+                        )}
                     </div>
                 </div>
 
                 {/* Video Player & Lesson List Area */}
                 <div className="lg:col-span-3 flex flex-col space-y-6">
                     
-                    {/* Native Video Player */}
+                    {/* Video Player Container */}
                     <div className="bg-black rounded-xl overflow-hidden shadow-xl border border-gray-800 aspect-video relative group">
                         {!activeLesson?.videoUrl ? (
                             <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 text-white">
@@ -183,6 +153,14 @@ const LearningResources = () => {
                                 <h3 className="text-2xl font-bold">Video coming soon</h3>
                                 <p className="text-gray-400 mt-2 text-center max-w-md">Video unavailable — authorized course video not yet uploaded.</p>
                             </div>
+                        ) : activeLesson?.videoProvider === 'youtube' ? (
+                            <iframe 
+                                key={activeLesson.videoUrl}
+                                src={`${activeLesson.videoUrl}?rel=0&modestbranding=1`} 
+                                className="w-full h-full border-0" 
+                                allowFullScreen 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            ></iframe>
                         ) : videoError ? (
                             <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 text-white p-6 text-center">
                                 <AlertTriangle className="w-12 h-12 text-red-500 mb-4" />
@@ -206,8 +184,8 @@ const LearningResources = () => {
                             </video>
                         )}
                         
-                        {/* Overlay Title (Visible when paused or starting) */}
-                        {activeLesson?.videoUrl && !videoError && (
+                        {/* Overlay Title (Visible when paused or starting) - Native Player Only */}
+                        {activeLesson?.videoProvider === 'self-hosted' && activeLesson?.videoUrl && !videoError && (
                             <div className="absolute top-0 left-0 w-full p-6 bg-gradient-to-b from-black/70 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-10">
                                 <h2 className="text-white text-xl font-bold">{activeLesson?.title}</h2>
                                 <p className="text-gray-300 text-sm">{activeModule.title}</p>
@@ -216,7 +194,7 @@ const LearningResources = () => {
                     </div>
 
                     {/* Demo Warning Label */}
-                    {activeLesson?.videoUrl === '/test-course-video.mp4' && (
+                    {activeLesson?.isDemo && (
                         <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md">
                             <div className="flex">
                                 <div className="flex-shrink-0">
@@ -243,7 +221,7 @@ const LearningResources = () => {
                             </h3>
                         </div>
                         
-                        <div className="divide-y divide-gray-100 overflow-y-auto">
+                        <div className="divide-y divide-gray-100 overflow-y-auto max-h-[500px]">
                             {activeModule.lessons?.map((lesson) => (
                                 <button 
                                     key={lesson._id} 
@@ -253,16 +231,18 @@ const LearningResources = () => {
                                     <div className="mr-4">
                                         {activeLesson?._id === lesson._id ? (
                                             <PlayCircle className="w-6 h-6 text-ihfcOrange" />
+                                        ) : lesson.videoProvider === 'youtube' ? (
+                                            <Youtube className="w-6 h-6 text-gray-400" />
                                         ) : (
                                             <CheckCircle className="w-6 h-6 text-gray-300" />
                                         )}
                                     </div>
                                     <div className="flex-1">
                                         <h4 className={`font-medium ${activeLesson?._id === lesson._id ? 'text-ihfcOrange font-bold' : 'text-gray-800'}`}>
-                                            {lesson.title}
+                                            {lesson.title} {lesson.isDemo ? '(Demo)' : ''}
                                         </h4>
                                         <p className="text-xs text-gray-500 mt-1">
-                                            {lesson.videoUrl ? 'Authorized Video' : 'Coming Soon'}
+                                            {lesson.videoProvider === 'youtube' ? 'YouTube Resource' : lesson.videoUrl ? 'Authorized Video' : 'Coming Soon'}
                                         </p>
                                     </div>
                                 </button>

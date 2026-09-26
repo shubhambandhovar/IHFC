@@ -190,29 +190,58 @@ const AdminPanel = () => {
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div>
-                                                    <label className="block text-xs font-bold text-gray-700 mb-1">Video URL (mp4 / hls)</label>
-                                                    <input 
-                                                        type="text" 
-                                                        className="w-full border rounded p-2 text-sm"
-                                                        value={editingLesson.videoUrl || ''}
-                                                        placeholder="https://cdn.example.com/course/ml/lesson-01.mp4"
-                                                        onChange={(e) => setEditingLesson({...editingLesson, videoUrl: e.target.value})}
-                                                    />
+                                                <div className="flex items-center space-x-4">
+                                                    <div className="flex-1">
+                                                        <label className="block text-xs font-bold text-gray-700 mb-1">Video URL (mp4 / youtube)</label>
+                                                        <input 
+                                                            type="text" 
+                                                            className="w-full border rounded p-2 text-sm"
+                                                            value={editingLesson.videoUrl || ''}
+                                                            placeholder="https://cdn.example.com/course/ml/lesson-01.mp4"
+                                                            onChange={(e) => setEditingLesson({...editingLesson, videoUrl: e.target.value})}
+                                                        />
+                                                    </div>
+                                                    <div className="pt-5">
+                                                        <label className="flex items-center space-x-2 text-sm text-gray-700 font-medium">
+                                                            <input 
+                                                                type="checkbox" 
+                                                                checked={editingLesson.isDemo || false}
+                                                                onChange={(e) => setEditingLesson({...editingLesson, isDemo: e.target.checked})}
+                                                                className="rounded border-gray-300 text-ihfcOrange focus:ring-ihfcOrange"
+                                                            />
+                                                            <span>Is Demo</span>
+                                                        </label>
+                                                    </div>
                                                 </div>
-                                                <div className="flex justify-end space-x-2 pt-2">
+                                                <div className="flex justify-between space-x-2 pt-2 border-t border-gray-100 mt-4">
                                                     <button 
-                                                        onClick={() => setEditingLesson(null)}
-                                                        className="px-4 py-2 text-sm border rounded text-gray-600 hover:bg-gray-50"
+                                                        onClick={() => {
+                                                            if (editingLesson.videoProvider === 'self-hosted' && editingLesson.videoUrl) {
+                                                                window.open(editingLesson.videoUrl, '_blank');
+                                                            } else if (editingLesson.videoProvider === 'youtube' && editingLesson.videoUrl) {
+                                                                window.open(editingLesson.videoUrl, '_blank');
+                                                            } else {
+                                                                alert('Please provide a valid URL to test.');
+                                                            }
+                                                        }}
+                                                        className="px-4 py-2 text-sm border rounded text-ihfcOrange hover:bg-orange-50 font-medium"
                                                     >
-                                                        Cancel
+                                                        Test Video URL
                                                     </button>
-                                                    <button 
-                                                        onClick={() => handleSaveLesson(lesson._id)}
-                                                        className="px-4 py-2 text-sm bg-ihfcOrange text-white rounded hover:bg-orange-600 flex items-center"
-                                                    >
-                                                        <Save className="w-4 h-4 mr-2" /> Save Changes
-                                                    </button>
+                                                    <div className="flex space-x-2">
+                                                        <button 
+                                                            onClick={() => setEditingLesson(null)}
+                                                            className="px-4 py-2 text-sm border rounded text-gray-600 hover:bg-gray-50"
+                                                        >
+                                                            Cancel
+                                                        </button>
+                                                        <button 
+                                                            onClick={() => handleSaveLesson(lesson._id)}
+                                                            className="px-4 py-2 text-sm bg-ihfcOrange text-white rounded hover:bg-orange-600 flex items-center"
+                                                        >
+                                                            <Save className="w-4 h-4 mr-2" /> Save Changes
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         ) : (
