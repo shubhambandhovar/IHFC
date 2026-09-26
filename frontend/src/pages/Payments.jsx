@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Download, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 
 const Payments = () => {
+    const navigate = useNavigate();
     const [generatingId, setGeneratingId] = useState(null);
     const [toastMessage, setToastMessage] = useState('');
 
@@ -319,7 +321,10 @@ const Payments = () => {
                                                 )}
                                             </button>
                                         ) : payment.status !== 'Paid' ? (
-                                            <button className="bg-ihfcOrange text-white px-4 py-1.5 rounded-md text-sm font-bold shadow-sm hover:bg-orange-600 hover:shadow transition-all">
+                                            <button 
+                                                onClick={() => navigate('/payment/final-installment')}
+                                                className="bg-ihfcOrange text-white px-4 py-1.5 rounded-md text-sm font-bold shadow-sm hover:bg-orange-600 hover:shadow transition-all"
+                                            >
                                                 Pay Now
                                             </button>
                                         ) : null}

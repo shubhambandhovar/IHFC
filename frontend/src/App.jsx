@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import CourseDetails from './pages/CourseDetails';
 import LearningPath from './pages/LearningPath';
 import Payments from './pages/Payments';
+import PaymentCheckout from './pages/PaymentCheckout';
 import Documents from './pages/Documents';
 import Profile from './pages/Profile';
 import AdminPanel from './pages/AdminPanel';
@@ -34,6 +35,7 @@ function App() {
             <Route path="learning-path" element={<LearningPath />} />
             <Route path="resources" element={<LearningResources />} />
             <Route path="payments" element={<Payments />} />
+            <Route path="payment/final-installment" element={<PaymentCheckout />} />
             <Route path="documents" element={<Documents />} />
             <Route path="profile" element={<Profile />} />
           </Route>
