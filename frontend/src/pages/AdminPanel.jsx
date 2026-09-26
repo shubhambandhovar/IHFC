@@ -21,7 +21,7 @@ const AdminPanel = () => {
                 setStudents(data);
             } catch (error) {
                 setStudents([
-                    { _id: '1', name: 'Shubham Shrivastava', studentId: 'IHFC2026-001', email: 'shubham@example.com', courseDetails: { progress: 25 } }
+                    { _id: '1', name: 'Shubham Shrivastava', studentId: 'IHFC2026-001', email: 'shubham.shrivastava@ihfc.in', courseDetails: { progress: 0 } }
                 ]);
             }
         };

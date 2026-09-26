@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { studentProfile } from '../data/portalData';
 
 export const AuthContext = createContext();
 
@@ -25,9 +26,11 @@ export const AuthProvider = ({ children }) => {
             console.log("Backend not available, using mock data for demonstration.");
             const mockUser = {
                 _id: "1",
-                studentId: "IHFC2026-001",
-                name: "Shubham Shrivastava",
-                email: "shubham@example.com",
+                studentId: studentProfile.studentId,
+                name: studentProfile.name,
+                email: studentProfile.personalEmail,
+                institutionalEmail: studentProfile.institutionalEmail,
+                enrollmentNumber: studentProfile.enrollmentNumber,
                 role: "student",
                 token: "mock_token"
             };

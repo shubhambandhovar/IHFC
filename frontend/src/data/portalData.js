@@ -1,4 +1,12 @@
 // Centralized data for the IHFC Portal
+export const studentProfile = {
+    name: "Shubham Shrivastava",
+    studentId: "IHFC2026-001",
+    enrollmentNumber: "ENR-2026-4589",
+    institutionalEmail: "shubham.shrivastava@ihfc.in",
+    personalEmail: "shubhambandhovar@gmail.com"
+};
+
 export const courseData = {
     title: "Professional Certificate Program in Generative AI, Machine Learning, and Intelligent Automation",
     provider: "Simplilearn",

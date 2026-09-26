@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import useDocumentTitle from '../hooks/useDocumentTitle';
 import { useNavigate } from 'react-router-dom';
 import { Download, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
+import { studentProfile } from '../data/portalData';
 
 const Payments = () => {
     useDocumentTitle('IHFC Portal | Payments & Receipts');
@@ -131,14 +132,14 @@ const Payments = () => {
         ctx.fillText('Student Name:', 140, 570);
         ctx.fillStyle = '#0f172a';
         ctx.font = 'bold 24px Arial, sans-serif';
-        ctx.fillText('Shubham Shrivastava', 140, 605);
+        ctx.fillText(studentProfile.name, 140, 605);
 
         ctx.font = '22px Arial, sans-serif';
         ctx.fillStyle = '#64748b';
         ctx.fillText('Student ID:', 600, 570);
         ctx.fillStyle = '#0f172a';
         ctx.font = 'bold 24px Arial, sans-serif';
-        ctx.fillText('IHFC2026-001', 600, 605);
+        ctx.fillText(studentProfile.studentId, 600, 605);
 
         ctx.font = '22px Arial, sans-serif';
         ctx.fillStyle = '#64748b';

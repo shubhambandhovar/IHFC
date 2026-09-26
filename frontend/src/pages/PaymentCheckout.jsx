@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import useDocumentTitle from '../hooks/useDocumentTitle';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, CreditCard, Building2, Smartphone, AlertCircle, ShieldCheck } from 'lucide-react';
+import { studentProfile } from '../data/portalData';
 
 const PaymentCheckout = () => {
     useDocumentTitle('IHFC Portal | Payment');
@@ -46,11 +47,11 @@ const PaymentCheckout = () => {
                             <div className="grid grid-cols-2 gap-y-6 gap-x-4">
                                 <div>
                                     <p className="text-sm text-gray-500">Student</p>
-                                    <p className="font-semibold text-gray-900 mt-1">Shubham Shrivastava</p>
+                                    <p className="font-semibold text-gray-900 mt-1">{studentProfile.name}</p>
                                 </div>
                                 <div>
                                     <p className="text-sm text-gray-500">Student ID</p>
-                                    <p className="font-semibold text-gray-900 mt-1">IHFC2026-001</p>
+                                    <p className="font-semibold text-gray-900 mt-1">{studentProfile.studentId}</p>
                                 </div>
                                 <div>
                                     <p className="text-sm text-gray-500">Due</p>
