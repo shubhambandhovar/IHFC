@@ -109,7 +109,7 @@ const Dashboard = () => {
                         <BookOpen className="w-5 h-5 text-ihfcOrange mr-3 group-hover:scale-110 transition-transform" />
                         <span className="font-semibold text-gray-800 text-sm">Continue Learning</span>
                     </button>
-                    <button onClick={() => navigate('/resources')} className="bg-white border border-gray-200 p-4 rounded-xl flex items-center hover:border-ihfcOrange hover:shadow-sm transition-all group">
+                    <button onClick={() => navigate('/learning-resources')} className="bg-white border border-gray-200 p-4 rounded-xl flex items-center hover:border-ihfcOrange hover:shadow-sm transition-all group">
                         <Video className="w-5 h-5 text-ihfcOrange mr-3 group-hover:scale-110 transition-transform" />
                         <span className="font-semibold text-gray-800 text-sm">Learning Resources</span>
                     </button>
@@ -287,14 +287,14 @@ const Dashboard = () => {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider">Recommended Learning Resources</h2>
-                    <button onClick={() => navigate('/resources')} className="text-ihfcOrange text-sm font-semibold flex items-center hover:underline">
+                    <button onClick={() => navigate('/learning-resources')} className="text-ihfcOrange text-sm font-semibold flex items-center hover:underline">
                         View All Resources <ChevronRight className="w-4 h-4 ml-1" />
                     </button>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {resourceData.slice(0, 3).map((res) => (
-                        <div key={res.id} onClick={() => navigate(`/resources?module=${res.moduleId}`)} className="group cursor-pointer p-4 border border-gray-200 rounded-xl hover:border-ihfcOrange hover:shadow-sm transition-all flex flex-col h-full">
+                        <div key={res.id} onClick={() => navigate(`/learning-resources?resource=${res.moduleId}`)} className="group cursor-pointer p-4 border border-gray-200 rounded-xl hover:border-ihfcOrange hover:shadow-sm transition-all flex flex-col h-full">
                             <div className="w-full aspect-video bg-gray-100 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
                                 <Video className="w-8 h-8 text-gray-300 group-hover:scale-110 transition-transform" />
                                 <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>

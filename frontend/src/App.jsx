@@ -33,7 +33,7 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path="course" element={<CourseDetails />} />
             <Route path="learning-path" element={<LearningPath />} />
-            <Route path="resources" element={<LearningResources />} />
+            <Route path="learning-resources" element={<LearningResources />} />
             <Route path="payments" element={<Payments />} />
             <Route path="payment/final-installment" element={<PaymentCheckout />} />
             <Route path="documents" element={<Documents />} />

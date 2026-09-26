@@ -7,7 +7,7 @@ const CourseDetails = () => {
     const navigate = useNavigate();
 
     // Filter out the demo module to only show official curriculum
-    const officialModules = fallbackModules.filter(m => m._id !== '0');
+    const officialModules = fallbackModules.filter(m => m._id !== 'python-data-science');
 
     return (
         <div className="space-y-6">
@@ -111,7 +111,7 @@ const CourseDetails = () => {
                                             <span>{isSingleVideo ? '1 Video' : `${lessonCount} Lessons`}</span>
                                         </div>
                                         <button 
-                                            onClick={() => navigate(`/resources?module=${mod._id}`)}
+                                            onClick={() => navigate(`/learning-resources?resource=${mod._id}`)}
                                             className="mt-auto w-full py-2.5 rounded-lg border-2 border-ihfcOrange text-ihfcOrange font-bold hover:bg-ihfcOrange hover:text-white transition-colors flex items-center justify-center gap-2"
                                         >
                                             {isSingleVideo ? (

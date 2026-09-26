@@ -15,11 +15,11 @@ const LearningPath = () => {
             { id: 1, title: 'Program Induction', description: 'Step into a unique learning experience', status: 'completed', resourceId: null },
             { id: 2, title: 'Python Refresher With AI', description: 'Essential programming skills', status: 'completed', resourceId: null },
             { id: 3, title: 'Applied Data Science With Python', description: 'Data science principles', status: 'in-progress', resourceId: null },
-            { id: 4, title: 'Machine Learning', description: 'Machine learning fundamentals and frameworks', status: 'in-progress', resourceId: '1' },
-            { id: 5, title: 'Deep Learning Specialization', description: 'Neural networks and deep learning', status: 'pending', resourceId: '2' },
-            { id: 6, title: 'GenAI Literacy', description: 'Foundational Generative AI applications', status: 'pending', resourceId: '3' },
-            { id: 7, title: 'Advanced Generative AI', description: 'Large language models and architectures', status: 'pending', resourceId: '4' },
-            { id: 8, title: 'Natural Language Processing (NLP)', description: 'Natural Language Processing techniques and transformers', status: 'pending', resourceId: '5' },
+            { id: 4, title: 'Machine Learning', description: 'Machine learning fundamentals and frameworks', status: 'in-progress', resourceId: 'machine-learning' },
+            { id: 5, title: 'Deep Learning Specialization', description: 'Neural networks and deep learning', status: 'pending', resourceId: 'deep-learning' },
+            { id: 6, title: 'GenAI Literacy', description: 'Foundational Generative AI applications', status: 'pending', resourceId: 'generative-ai-roadmap' },
+            { id: 7, title: 'Advanced Generative AI', description: 'Large language models and architectures', status: 'pending', resourceId: 'generative-ai-langchain' },
+            { id: 8, title: 'Natural Language Processing (NLP)', description: 'Natural Language Processing techniques and transformers', status: 'pending', resourceId: 'nlp' },
             { id: 9, title: 'Capstone Project', description: 'Real-world business challenge', status: 'pending', resourceId: null }
         ];
         setPath(hardcodedPath);
@@ -27,7 +27,7 @@ const LearningPath = () => {
 
     const handleContinue = (resourceId) => {
         if (resourceId) {
-            navigate(`/learning-resources?module=${resourceId}`);
+            navigate(`/learning-resources?resource=${resourceId}`);
         }
     };
 

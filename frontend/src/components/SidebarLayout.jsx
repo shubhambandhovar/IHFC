@@ -24,7 +24,7 @@ const SidebarLayout = () => {
         { name: 'Dashboard', path: '/', icon: LayoutDashboard },
         { name: 'Course Details', path: '/course', icon: BookOpen },
         { name: 'Learning Path', path: '/learning-path', icon: Map },
-        { name: 'Learning Resources', path: '/resources', icon: BookOpen },
+        { name: 'Learning Resources', path: '/learning-resources', icon: BookOpen },
         { name: 'Payments & Receipts', path: '/payments', icon: CreditCard },
         { name: 'Documents', path: '/documents', icon: FileText },
         { name: 'Profile', path: '/profile', icon: User },

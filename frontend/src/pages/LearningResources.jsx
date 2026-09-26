@@ -16,19 +16,37 @@ const LearningResources = () => {
     const videoRef = useRef(null);
 
     useEffect(() => {
-        const targetModuleId = searchParams.get('module');
+        // Look for ?resource= primarily, fallback to ?module= for backwards compatibility
+        const targetResourceId = searchParams.get('resource') || searchParams.get('module');
         
         // Use the newly generated fallbackData as the absolute source of truth 
         // because it contains the fully parsed YouTube playlists
         setModules(initialFallbackModules);
         
-        const initialModule = targetModuleId 
-            ? initialFallbackModules.find(m => m._id === targetModuleId) || initialFallbackModules[0]
-            : initialFallbackModules[0];
+        let initialModule = null;
+        if (targetResourceId) {
+            initialModule = initialFallbackModules.find(m => m._id === targetResourceId);
+        } else {
+            initialModule = initialFallbackModules[0];
+        }
 
-        setActiveModule(initialModule);
-        if (initialModule?.lessons?.length > 0) {
-            setActiveLesson(initialModule.lessons[0]);
+        if (initialModule) {
+            setActiveModule(initialModule);
+            // Optionally support &lesson=<videoId>
+            const targetLessonId = searchParams.get('lesson');
+            if (targetLessonId && initialModule.lessons?.length > 0) {
+                const specificLesson = initialModule.lessons.find(l => l._id === targetLessonId);
+                setActiveLesson(specificLesson || initialModule.lessons[0]);
+            } else if (initialModule.lessons?.length > 0) {
+                setActiveLesson(initialModule.lessons[0]);
+            } else {
+                setActiveLesson(null);
+            }
+        } else if (targetResourceId) {
+            // Resource not found scenario (invalid ID)
+            setActiveModule(null);
+            setActiveLesson(null);
+            console.warn(`Invalid resource ID requested: ${targetResourceId}`);
         }
         
         setLoading(false);
@@ -37,6 +55,7 @@ const LearningResources = () => {
     const handleSelectModule = (mod) => {
         setActiveModule(mod);
         if (mod.lessons?.length > 0) setActiveLesson(mod.lessons[0]);
+        else setActiveLesson(null);
     };
 
     const handleSelectLesson = (lesson) => {
@@ -85,6 +104,31 @@ const LearningResources = () => {
 
     if (loading) return <div className="p-8">Loading course architecture...</div>;
     if (!modules.length) return <div className="p-8">No learning resources available yet.</div>;
+    
+    // Resource Not Found Error State
+    if (!activeModule) {
+        return (
+            <div className="space-y-6">
+                <div>
+                    <h1 className="text-3xl font-bold text-gray-900">AI Learning Resources</h1>
+                    <p className="text-gray-600 mt-2">Strengthen your concepts with authorized expert-led learning resources.</p>
+                </div>
+                <div className="bg-white p-12 rounded-xl shadow-sm border border-gray-200 flex flex-col items-center justify-center text-center mt-8">
+                    <AlertTriangle className="w-16 h-16 text-ihfcOrange mb-4" />
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Resource not found</h2>
+                    <p className="text-gray-500 max-w-md mx-auto mb-6">
+                        The requested learning resource could not be found. It may have been removed or the link is incorrect.
+                    </p>
+                    <button 
+                        onClick={() => window.location.href = '/learning-resources'}
+                        className="bg-ihfcDark text-white px-6 py-2.5 rounded-lg font-bold hover:bg-black transition-colors"
+                    >
+                        Back to Learning Resources
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     // Filter out demo lessons for completion calculations
     const realLessons = activeModule.lessons?.filter(l => !l.isDemo) || [];

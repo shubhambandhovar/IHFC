@@ -50,9 +50,9 @@ export const activityData = [
 ];
 
 export const resourceData = [
-    { id: '1', title: "Machine Learning", author: "Krish Naik", url: "https://www.youtube.com/playlist?list=PLZoTAELRMXVPBTrWtJkn3wWQxZkmTXGwe", moduleId: '4' },
-    { id: '2', title: "Deep Learning", author: "Krish Naik", url: "https://www.youtube.com/playlist?list=PLZoTAELRMXVPGU70ZGsckrMdr0FteeRUi", moduleId: '5' },
-    { id: '3', title: "Generative AI Roadmap", author: "CampusX", url: "https://www.youtube.com/watch?v=pSVk-5WemQ0", moduleId: '6' },
-    { id: '4', title: "Generative AI using LangChain", author: "CampusX", url: "https://www.youtube.com/playlist?list=PLKnIA16_RmvaTbihpo4MtzVm4XOQa0ER0", moduleId: '7' },
+    { id: '1', title: "Machine Learning", author: "Krish Naik", url: "https://www.youtube.com/playlist?list=PLZoTAELRMXVPBTrWtJkn3wWQxZkmTXGwe", moduleId: 'machine-learning' },
+    { id: '2', title: "Deep Learning", author: "Krish Naik", url: "https://www.youtube.com/playlist?list=PLZoTAELRMXVPGU70ZGsckrMdr0FteeRUi", moduleId: 'deep-learning' },
+    { id: '3', title: "Generative AI Roadmap", author: "CampusX", url: "https://www.youtube.com/watch?v=pSVk-5WemQ0", moduleId: 'generative-ai-roadmap' },
+    { id: '4', title: "Generative AI using LangChain", author: "CampusX", url: "https://www.youtube.com/playlist?list=PLKnIA16_RmvaTbihpo4MtzVm4XOQa0ER0", moduleId: 'generative-ai-langchain' },
     { id: '5', title: "NLP", author: "Krish Naik", url: "https://www.youtube.com/playlist?list=PLZoTAELRMXVNNrHSKv36Lr3_156yCo6Nn", moduleId: 'nlp' }
 ];
