@@ -46,6 +46,24 @@ const LearningResources = () => {
                 }
             } catch (error) {
                 console.error("Failed to fetch modules", error);
+                // Fallback if backend is down or unreachable
+                const fallbackModules = [
+                    {
+                        _id: '1',
+                        title: 'Machine Learning',
+                        instructor: 'Krish Naik',
+                        published: true,
+                        lessons: [
+                            { _id: 'l1', title: '01 Introduction to Machine Learning', videoProvider: 'self-hosted', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4' },
+                            { _id: 'l2', title: '02 Linear Regression', videoProvider: 'self-hosted', videoUrl: '' },
+                            { _id: 'l3', title: '03 Logistic Regression', videoProvider: 'self-hosted', videoUrl: '' },
+                            { _id: 'l4', title: '04 Decision Trees', videoProvider: 'self-hosted', videoUrl: '' },
+                        ]
+                    }
+                ];
+                setModules(fallbackModules);
+                setActiveModule(fallbackModules[0]);
+                setActiveLesson(fallbackModules[0].lessons[0]);
             } finally {
                 setLoading(false);
             }
