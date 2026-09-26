@@ -44,7 +44,7 @@ const PaymentCheckout = () => {
                             <h3 className="text-xl font-bold text-gray-900 mt-1">Professional Certificate Program in Generative AI, Machine Learning, and Intelligent Automation</h3>
                         </div>
                         <div className="p-6">
-                            <div className="grid grid-cols-2 gap-y-6 gap-x-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-4">
                                 <div>
                                     <p className="text-sm text-gray-500">Student</p>
                                     <p className="font-semibold text-gray-900 mt-1">{studentProfile.name}</p>

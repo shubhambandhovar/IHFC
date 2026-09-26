@@ -270,7 +270,8 @@ const Payments = () => {
                         <span className="text-sm font-medium">Final installment due upon completion</span>
                     </div>
                 </div>
-                <div className="overflow-x-auto">
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left border-collapse min-w-[800px]">
                         <thead>
                             <tr className="bg-gray-50 text-gray-600 border-b border-gray-200">
@@ -336,6 +337,74 @@ const Payments = () => {
                             ))}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Mobile Card View */}
+                <div className="md:hidden divide-y divide-gray-100">
+                    {payments.map((payment) => (
+                        <div key={payment._id} className="p-4 space-y-4 bg-white">
+                            <div className="flex justify-between items-start">
+                                <div>
+                                    <h3 className="font-bold text-gray-900 text-base">{payment.feeType}</h3>
+                                    {payment.transactionId && <p className="text-xs text-gray-500 mt-1">TXN: {payment.transactionId}</p>}
+                                </div>
+                                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${
+                                    payment.status === 'Paid' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                                }`}>
+                                    {payment.status}
+                                </span>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <span className="block text-gray-500 mb-1">Due Date</span>
+                                    <span className="font-medium text-gray-900">{payment.dueDate}</span>
+                                </div>
+                                <div>
+                                    <span className="block text-gray-500 mb-1">Amount Due</span>
+                                    <span className="font-medium text-gray-900">
+                                        {payment.amountDue > payment.amountPaid ? `₹${(payment.amountDue - payment.amountPaid).toLocaleString()}` : '-'}
+                                    </span>
+                                </div>
+                                <div className="col-span-2">
+                                    <span className="block text-gray-500 mb-1">Amount Paid</span>
+                                    <span className="font-bold text-green-600">
+                                        {payment.amountPaid > 0 ? `₹${payment.amountPaid.toLocaleString()}` : '-'}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="pt-2">
+                                {payment.status === 'Paid' && payment.fileName ? (
+                                    <button 
+                                        onClick={() => generateReceipt(payment)}
+                                        disabled={generatingId !== null}
+                                        className="w-full bg-gray-50 hover:bg-gray-100 border border-gray-200 text-ihfcDark font-semibold py-3 px-4 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50 h-12"
+                                        aria-label={`Download Receipt: ${payment.receiptNumber}`}
+                                    >
+                                        {generatingId === payment._id ? (
+                                            <>
+                                                <Loader2 className="w-5 h-5 animate-spin mr-2 text-ihfcOrange" />
+                                                <span className="text-ihfcOrange">Generating Receipt...</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Download className="w-5 h-5 mr-2" />
+                                                <span>Download Receipt</span>
+                                            </>
+                                        )}
+                                    </button>
+                                ) : payment.status !== 'Paid' ? (
+                                    <button 
+                                        onClick={() => navigate('/payment/final-installment')}
+                                        className="w-full bg-ihfcOrange text-white py-3 px-4 rounded-lg font-bold shadow-sm hover:bg-orange-600 hover:shadow transition-all h-12 flex items-center justify-center"
+                                    >
+                                        Pay ₹{(payment.amountDue - payment.amountPaid).toLocaleString()}
+                                    </button>
+                                ) : null}
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
 

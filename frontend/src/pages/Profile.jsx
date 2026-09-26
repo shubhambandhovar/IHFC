@@ -211,7 +211,7 @@ const Profile = () => {
                                 <span className="block text-gray-500 text-xs font-semibold mb-0.5">Personal Email</span>
                                 <span className="font-medium text-gray-900 break-all">{profile.personalEmail}</span>
                             </div>
-                            <div className="grid grid-cols-2 gap-4 pt-2">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                                 <div>
                                     <span className="block text-gray-500 text-xs font-semibold mb-0.5">Student ID</span>
                                     <span className="font-bold text-gray-900">{profile.studentId}</span>
@@ -251,7 +251,7 @@ const Profile = () => {
                                 <input type="text" defaultValue={profile.name} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-ihfcOrange focus:border-ihfcOrange outline-none transition-all" />
                             </div>
                             
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center justify-between">
                                         Student ID

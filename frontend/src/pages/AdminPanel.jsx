@@ -168,7 +168,7 @@ const AdminPanel = () => {
                                         
                                         {editingLesson && editingLesson._id === lesson._id ? (
                                             <div className="space-y-4 bg-white p-4 rounded border">
-                                                <div className="grid grid-cols-2 gap-4">
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                     <div>
                                                         <label className="block text-xs font-bold text-gray-700 mb-1">Video Provider</label>
                                                         <select 
@@ -192,7 +192,7 @@ const AdminPanel = () => {
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div className="flex items-center space-x-4">
+                                                <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4">
                                                     <div className="flex-1">
                                                         <label className="block text-xs font-bold text-gray-700 mb-1">Video URL (mp4 / youtube)</label>
                                                         <input 
@@ -203,7 +203,7 @@ const AdminPanel = () => {
                                                             onChange={(e) => setEditingLesson({...editingLesson, videoUrl: e.target.value})}
                                                         />
                                                     </div>
-                                                    <div className="pt-5">
+                                                    <div className="md:pt-5">
                                                         <label className="flex items-center space-x-2 text-sm text-gray-700 font-medium">
                                                             <input 
                                                                 type="checkbox" 
@@ -215,7 +215,7 @@ const AdminPanel = () => {
                                                         </label>
                                                     </div>
                                                 </div>
-                                                <div className="flex justify-between space-x-2 pt-2 border-t border-gray-100 mt-4">
+                                                <div className="flex flex-col md:flex-row justify-between gap-4 pt-4 border-t border-gray-100 mt-4">
                                                     <button 
                                                         onClick={() => {
                                                             if (editingLesson.videoProvider === 'self-hosted' && editingLesson.videoUrl) {
@@ -226,20 +226,20 @@ const AdminPanel = () => {
                                                                 alert('Please provide a valid URL to test.');
                                                             }
                                                         }}
-                                                        className="px-4 py-2 text-sm border rounded text-ihfcOrange hover:bg-orange-50 font-medium"
+                                                        className="px-4 py-2 text-sm border rounded text-ihfcOrange hover:bg-orange-50 font-medium w-full md:w-auto"
                                                     >
                                                         Test Video URL
                                                     </button>
-                                                    <div className="flex space-x-2">
+                                                    <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
                                                         <button 
                                                             onClick={() => setEditingLesson(null)}
-                                                            className="px-4 py-2 text-sm border rounded text-gray-600 hover:bg-gray-50"
+                                                            className="px-4 py-2 text-sm border rounded text-gray-600 hover:bg-gray-50 w-full md:w-auto"
                                                         >
                                                             Cancel
                                                         </button>
                                                         <button 
                                                             onClick={() => handleSaveLesson(lesson._id)}
-                                                            className="px-4 py-2 text-sm bg-ihfcOrange text-white rounded hover:bg-orange-600 flex items-center"
+                                                            className="px-4 py-2 text-sm bg-ihfcOrange text-white rounded hover:bg-orange-600 flex justify-center items-center w-full md:w-auto"
                                                         >
                                                             <Save className="w-4 h-4 mr-2" /> Save Changes
                                                         </button>

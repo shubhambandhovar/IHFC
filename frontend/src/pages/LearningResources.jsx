@@ -128,8 +128,22 @@ const LearningResources = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 
-                {/* Module Sidebar */}
-                <div className="lg:col-span-1 space-y-2 flex flex-col max-h-[800px]">
+                {/* Mobile Module Selector */}
+                <div className="lg:hidden w-full">
+                    <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Select Resource Module</label>
+                    <select 
+                        value={activeModule._id}
+                        onChange={(e) => handleSelectModule(modules.find(m => m._id === e.target.value))}
+                        className="w-full p-4 bg-white border border-gray-300 rounded-xl font-semibold text-gray-900 focus:ring-2 focus:ring-ihfcOrange focus:border-ihfcOrange outline-none appearance-none"
+                    >
+                        {modules.map(mod => (
+                            <option key={mod._id} value={mod._id}>{mod.title}</option>
+                        ))}
+                    </select>
+                </div>
+
+                {/* Desktop Module Sidebar */}
+                <div className="hidden lg:flex lg:col-span-1 space-y-2 flex-col max-h-[800px]">
                     <h3 className="font-bold text-gray-900 uppercase text-sm tracking-wider mb-4">Modules</h3>
                     <div className="overflow-y-auto space-y-3 flex-1 pr-2">
                         {modules.map((mod) => {
@@ -208,7 +222,7 @@ const LearningResources = () => {
                     
                     {/* Completion Button & Actions */}
                     {activeLesson && !activeLesson.isDemo && (
-                        <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-white p-4 rounded-xl border border-gray-200 shadow-sm gap-4">
                             <div>
                                 <h3 className="font-bold text-gray-900">{activeLesson.title}</h3>
                                 {activeLessonStatus?.status === 'in_progress' && activeLessonStatus.watchedPercent > 0 && (
@@ -218,7 +232,7 @@ const LearningResources = () => {
                             
                             <button 
                                 onClick={() => markLessonCompleted(activeModule._id, activeLesson._id)}
-                                className={`flex items-center px-6 py-2.5 rounded-lg font-bold shadow-sm transition-all ${
+                                className={`w-full md:w-auto flex items-center justify-center px-6 py-3 md:py-2.5 rounded-lg font-bold shadow-sm transition-all ${
                                     activeLessonStatus?.status === 'completed' 
                                         ? 'bg-green-50 text-green-700 border border-green-200 cursor-default' 
                                         : 'bg-ihfcOrange text-white hover:bg-orange-600'
