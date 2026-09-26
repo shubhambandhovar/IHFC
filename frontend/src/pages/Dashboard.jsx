@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import { useProgress } from '../context/ProgressContext';
 import { useNavigate } from 'react-router-dom';
 import { 
     BookOpen, Award, Clock, Calendar, PlayCircle, 
@@ -7,17 +8,43 @@ import {
     FileText, Bell, Activity, ArrowRight, Check
 } from 'lucide-react';
 import { 
-    courseData, progressData, paymentData, 
+    courseData, paymentData, 
     notificationData, activityData, resourceData 
 } from '../data/portalData';
+import { fallbackModules } from '../data/fallbackData';
 
 const Dashboard = () => {
     const { user } = useContext(AuthContext);
+    const { isCourseStarted, courseStartDateStr, progress, getProgramProgress } = useProgress();
     const navigate = useNavigate();
 
-    const currentModule = courseData.modules.find(m => m.status === 'current');
-    const upcomingModules = courseData.modules.filter(m => m.status === 'upcoming').slice(0, 3);
+    const progData = getProgramProgress();
+    const upcomingModules = courseData.modules.slice(0, 3);
     const pendingPayment = paymentData.installments.find(p => p.status === 'Pending');
+
+    let currentLearningTitle = "Course hasn't started yet.";
+    let currentLearningDesc = `Course start: ${courseStartDateStr}`;
+    let currentLearningTarget = '/learning-path';
+    let currentLearningProgress = null;
+
+    if (isCourseStarted) {
+        if (progress.lastActiveLesson) {
+            const resData = fallbackModules.find(m => m._id === progress.lastActiveLesson.resourceId);
+            const lessonData = resData?.lessons?.find(l => l._id === progress.lastActiveLesson.lessonId);
+            if (resData && lessonData) {
+                currentLearningTitle = resData.title;
+                currentLearningDesc = `Lesson: ${lessonData.title}`;
+                currentLearningTarget = `/learning-resources?resource=${resData._id}&lesson=${lessonData._id}`;
+                currentLearningProgress = progress.lessons[lessonData._id]?.watchedPercent || 0;
+            } else {
+                currentLearningTitle = "Ready to start your journey";
+                currentLearningDesc = "Explore the learning path to begin your first module.";
+            }
+        } else {
+            currentLearningTitle = "Ready to start your journey";
+            currentLearningDesc = "Explore the learning path to begin your first module.";
+        }
+    }
 
     return (
         <div className="space-y-8 pb-12">
@@ -56,13 +83,13 @@ const Dashboard = () => {
                         <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center">
                             <Activity className="w-5 h-5" />
                         </div>
-                        <span className="text-2xl font-bold text-gray-900">{progressData.percentage}%</span>
+                        <span className="text-2xl font-bold text-gray-900">{progData.percentage}%</span>
                     </div>
                     <p className="text-sm font-bold text-gray-800 uppercase tracking-wide mb-2">Program Progress</p>
                     <div className="w-full bg-gray-100 rounded-full h-1.5 mb-2">
-                        <div className="bg-blue-600 h-1.5 rounded-full" style={{ width: `${progressData.percentage}%` }}></div>
+                        <div className="bg-blue-600 h-1.5 rounded-full" style={{ width: `${progData.percentage}%` }}></div>
                     </div>
-                    <p className="text-xs text-gray-500 font-medium">{progressData.completedModules} of {progressData.totalModules} core modules completed</p>
+                    <p className="text-xs text-gray-500 font-medium">{progData.completedModules} of {progData.totalModules} core modules completed</p>
                 </div>
 
                 {/* Certificates */}
@@ -71,7 +98,7 @@ const Dashboard = () => {
                         <div className="w-10 h-10 bg-orange-50 text-ihfcOrange rounded-lg flex items-center justify-center">
                             <Award className="w-5 h-5" />
                         </div>
-                        <span className="text-2xl font-bold text-gray-900">{progressData.certificatesEarned}</span>
+                        <span className="text-2xl font-bold text-gray-900">0</span>
                     </div>
                     <p className="text-sm font-bold text-gray-800 uppercase tracking-wide mb-2">Certificates Earned</p>
                     <p className="text-xs text-gray-500 font-medium">Certificate available after program completion</p>
@@ -105,7 +132,7 @@ const Dashboard = () => {
             <div>
                 <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">Quick Actions</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <button onClick={() => navigate('/learning-path')} className="bg-white border border-gray-200 p-4 rounded-xl flex items-center hover:border-ihfcOrange hover:shadow-sm transition-all group">
+                    <button onClick={() => navigate(currentLearningTarget)} className="bg-white border border-gray-200 p-4 rounded-xl flex items-center hover:border-ihfcOrange hover:shadow-sm transition-all group">
                         <BookOpen className="w-5 h-5 text-ihfcOrange mr-3 group-hover:scale-110 transition-transform" />
                         <span className="font-semibold text-gray-800 text-sm">Continue Learning</span>
                     </button>
@@ -134,37 +161,35 @@ const Dashboard = () => {
                     <div>
                         <div className="flex justify-between items-start mb-6">
                             <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider">Current Learning</h2>
-                            <span className="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full flex items-center">
-                                <PlayCircle className="w-3.5 h-3.5 mr-1" /> In Progress
-                            </span>
+                            {isCourseStarted && currentLearningProgress !== null && (
+                                <span className="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full flex items-center">
+                                    <PlayCircle className="w-3.5 h-3.5 mr-1" /> In Progress
+                                </span>
+                            )}
                         </div>
 
-                        {currentModule ? (
-                            <>
-                                <h3 className="text-2xl font-bold text-gray-900">{currentModule.title}</h3>
-                                <p className="text-gray-600 mt-3 max-w-xl leading-relaxed">{currentModule.description}</p>
-                                
-                                <div className="mt-6 flex flex-wrap gap-2">
-                                    {currentModule.skills.map(skill => (
-                                        <span key={skill} className="px-3 py-1.5 bg-gray-50 border border-gray-200 text-gray-700 rounded-lg text-xs font-semibold">
-                                            {skill}
-                                        </span>
-                                    ))}
+                        <h3 className="text-2xl font-bold text-gray-900">{currentLearningTitle}</h3>
+                        <p className="text-gray-600 mt-3 max-w-xl leading-relaxed">{currentLearningDesc}</p>
+                        
+                        {currentLearningProgress !== null && (
+                            <div className="mt-4 max-w-md">
+                                <div className="flex justify-between text-xs mb-1">
+                                    <span className="font-medium text-gray-600">Progress</span>
+                                    <span className="font-bold text-ihfcOrange">{Math.round(currentLearningProgress)}%</span>
                                 </div>
-                            </>
-                        ) : (
-                            <div className="py-8">
-                                <h3 className="text-xl font-bold text-gray-400">Course resources will be added soon.</h3>
+                                <div className="w-full bg-gray-100 rounded-full h-1.5">
+                                    <div className="bg-ihfcOrange h-1.5 rounded-full" style={{ width: `${currentLearningProgress}%` }}></div>
+                                </div>
                             </div>
                         )}
                     </div>
                     
                     <div className="mt-8 pt-6 border-t border-gray-100">
                         <button 
-                            onClick={() => navigate('/learning-path')}
+                            onClick={() => navigate(currentLearningTarget)}
                             className="bg-ihfcDark text-white font-bold py-3 px-6 rounded-lg hover:bg-black transition-colors flex items-center"
                         >
-                            Continue Learning <ArrowRight className="w-4 h-4 ml-2" />
+                            {isCourseStarted && progress.lastActiveLesson ? "Resume Video" : "Explore Modules"} <ArrowRight className="w-4 h-4 ml-2" />
                         </button>
                     </div>
                 </div>

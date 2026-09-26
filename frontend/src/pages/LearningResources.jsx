@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { PlayCircle, CheckCircle, Video, Clock, AlertTriangle } from 'lucide-react';
-import axios from 'axios';
+import { PlayCircle, CheckCircle, Video, Clock, AlertTriangle, Circle, Check } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
+import { useProgress } from '../context/ProgressContext';
 import { fallbackModules as initialFallbackModules } from '../data/fallbackData';
 import { useSearchParams } from 'react-router-dom';
 
 const LearningResources = () => {
     const { user } = useContext(AuthContext);
+    const { markLessonCompleted, updateLessonProgress, getResourceProgress, getLessonStatus } = useProgress();
     const [searchParams] = useSearchParams();
     const [modules, setModules] = useState([]);
     const [activeModule, setActiveModule] = useState(null);
@@ -16,11 +17,7 @@ const LearningResources = () => {
     const videoRef = useRef(null);
 
     useEffect(() => {
-        // Look for ?resource= primarily, fallback to ?module= for backwards compatibility
         const targetResourceId = searchParams.get('resource') || searchParams.get('module');
-        
-        // Use the newly generated fallbackData as the absolute source of truth 
-        // because it contains the fully parsed YouTube playlists
         setModules(initialFallbackModules);
         
         let initialModule = null;
@@ -32,7 +29,6 @@ const LearningResources = () => {
 
         if (initialModule) {
             setActiveModule(initialModule);
-            // Optionally support &lesson=<videoId>
             const targetLessonId = searchParams.get('lesson');
             if (targetLessonId && initialModule.lessons?.length > 0) {
                 const specificLesson = initialModule.lessons.find(l => l._id === targetLessonId);
@@ -43,10 +39,8 @@ const LearningResources = () => {
                 setActiveLesson(null);
             }
         } else if (targetResourceId) {
-            // Resource not found scenario (invalid ID)
             setActiveModule(null);
             setActiveLesson(null);
-            console.warn(`Invalid resource ID requested: ${targetResourceId}`);
         }
         
         setLoading(false);
@@ -61,35 +55,25 @@ const LearningResources = () => {
     const handleSelectLesson = (lesson) => {
         setVideoError(false);
         setActiveLesson(lesson);
-        // Only track real course content progress
         if (!lesson.isDemo) {
-            trackProgress(lesson._id, false, 0);
-        }
-    };
-
-    const trackProgress = async (lessonId, completed, position) => {
-        if (activeLesson?.isDemo) return; // Do not track demo video
-        try {
-            await axios.post('https://ihfc.onrender.com/api/learning/progress', 
-                { lessonId, moduleId: activeModule._id, completed, playbackPosition: position },
-                { headers: { Authorization: `Bearer ${user.token}` } }
-            );
-        } catch (error) {
-            console.error("Progress tracking error:", error);
+            updateLessonProgress(activeModule._id, lesson._id, 0);
         }
     };
 
     const handleTimeUpdate = () => {
         if (!videoRef.current || !activeLesson || activeLesson.isDemo) return;
-        if (Math.floor(videoRef.current.currentTime) % 10 === 0) {
-            trackProgress(activeLesson._id, false, videoRef.current.currentTime);
+        const duration = videoRef.current.duration;
+        const current = videoRef.current.currentTime;
+        if (duration > 0 && Math.floor(current) % 5 === 0) {
+            const percent = (current / duration) * 100;
+            updateLessonProgress(activeModule._id, activeLesson._id, percent);
         }
     };
 
     const handleVideoEnded = () => {
         if (!activeLesson) return;
         if (!activeLesson.isDemo) {
-            trackProgress(activeLesson._id, true, videoRef.current.currentTime);
+            markLessonCompleted(activeModule._id, activeLesson._id);
         }
         const currentIndex = activeModule.lessons.findIndex(l => l._id === activeLesson._id);
         if (currentIndex !== -1 && currentIndex < activeModule.lessons.length - 1) {
@@ -105,7 +89,6 @@ const LearningResources = () => {
     if (loading) return <div className="p-8">Loading course architecture...</div>;
     if (!modules.length) return <div className="p-8">No learning resources available yet.</div>;
     
-    // Resource Not Found Error State
     if (!activeModule) {
         return (
             <div className="space-y-6">
@@ -131,10 +114,8 @@ const LearningResources = () => {
     }
 
     // Filter out demo lessons for completion calculations
-    const realLessons = activeModule.lessons?.filter(l => !l.isDemo) || [];
-    const totalLessons = realLessons.length || 1;
-    const completedLessons = 0; // To be pulled from user progress state later
-    const progressPercent = Math.round((completedLessons / totalLessons) * 100);
+    const resProg = getResourceProgress(activeModule._id);
+    const activeLessonStatus = activeLesson ? getLessonStatus(activeLesson._id) : null;
 
     return (
         <div className="space-y-6">
@@ -148,8 +129,10 @@ const LearningResources = () => {
                 {/* Module Sidebar */}
                 <div className="lg:col-span-1 space-y-2 flex flex-col max-h-[800px]">
                     <h3 className="font-bold text-gray-900 uppercase text-sm tracking-wider mb-4">Modules</h3>
-                    <div className="overflow-y-auto space-y-2 flex-1 pr-2">
-                        {modules.map((mod) => (
+                    <div className="overflow-y-auto space-y-3 flex-1 pr-2">
+                        {modules.map((mod) => {
+                            const modProg = getResourceProgress(mod._id);
+                            return (
                             <button 
                                 key={mod._id}
                                 onClick={() => handleSelectModule(mod)}
@@ -157,22 +140,24 @@ const LearningResources = () => {
                             >
                                 <h4 className="font-semibold">{mod.title}</h4>
                                 <p className={`text-xs mt-1 ${activeModule._id === mod._id ? 'text-gray-300' : 'text-gray-500'}`}>
-                                    {mod.instructor}
+                                    {mod.instructor || mod.author}
                                 </p>
+                                
+                                {modProg.total > 0 && (
+                                    <div className="mt-3 pt-3 border-t border-gray-200/20">
+                                        <p className={`text-xs mb-1 ${activeModule._id === mod._id ? 'text-gray-300' : 'text-gray-500'}`}>
+                                            {modProg.completed} / {modProg.total} completed
+                                        </p>
+                                        <div className="w-full bg-gray-200/30 rounded-full h-1.5 mb-1 flex overflow-hidden">
+                                            <div className="bg-ihfcOrange h-1.5 rounded-full" style={{ width: `${modProg.percent}%` }}></div>
+                                        </div>
+                                        <div className="text-right">
+                                            <span className={`text-[10px] font-bold ${activeModule._id === mod._id ? 'text-gray-300' : 'text-gray-500'}`}>{modProg.percent}%</span>
+                                        </div>
+                                    </div>
+                                )}
                             </button>
-                        ))}
-                    </div>
-                    
-                    {/* Progress Card */}
-                    <div className="mt-4 p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
-                        <h4 className="text-sm font-bold text-gray-800 mb-2">{activeModule.title} Progress</h4>
-                        <div className="w-full bg-gray-200 rounded-full h-2.5 mb-2">
-                            <div className="bg-ihfcOrange h-2.5 rounded-full" style={{ width: `${progressPercent}%` }}></div>
-                        </div>
-                        <p className="text-xs text-gray-500 font-medium">{completedLessons} / {totalLessons} lessons completed ({progressPercent}%)</p>
-                        {activeModule.lessons?.some(l => l.isDemo) && (
-                            <p className="text-[10px] text-gray-400 mt-1 italic">*Demo lessons are not tracked</p>
-                        )}
+                        )})}
                     </div>
                 </div>
 
@@ -217,15 +202,37 @@ const LearningResources = () => {
                                 Your browser does not support the video tag.
                             </video>
                         )}
-                        
-                        {/* Overlay Title (Visible when paused or starting) - Native Player Only */}
-                        {activeLesson?.videoProvider === 'self-hosted' && activeLesson?.videoUrl && !videoError && (
-                            <div className="absolute top-0 left-0 w-full p-6 bg-gradient-to-b from-black/70 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                                <h2 className="text-white text-xl font-bold">{activeLesson?.title}</h2>
-                                <p className="text-gray-300 text-sm">{activeModule.title}</p>
-                            </div>
-                        )}
                     </div>
+                    
+                    {/* Completion Button & Actions */}
+                    {activeLesson && !activeLesson.isDemo && (
+                        <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                            <div>
+                                <h3 className="font-bold text-gray-900">{activeLesson.title}</h3>
+                                {activeLessonStatus?.status === 'in_progress' && activeLessonStatus.watchedPercent > 0 && (
+                                    <p className="text-xs text-gray-500 mt-1">{Math.round(activeLessonStatus.watchedPercent)}% watched</p>
+                                )}
+                            </div>
+                            
+                            <button 
+                                onClick={() => markLessonCompleted(activeModule._id, activeLesson._id)}
+                                className={`flex items-center px-6 py-2.5 rounded-lg font-bold shadow-sm transition-all ${
+                                    activeLessonStatus?.status === 'completed' 
+                                        ? 'bg-green-50 text-green-700 border border-green-200 cursor-default' 
+                                        : 'bg-ihfcOrange text-white hover:bg-orange-600'
+                                }`}
+                            >
+                                {activeLessonStatus?.status === 'completed' ? (
+                                    <>
+                                        <Check className="w-5 h-5 mr-2" />
+                                        Completed
+                                    </>
+                                ) : (
+                                    'Mark as Completed'
+                                )}
+                            </button>
+                        </div>
+                    )}
 
                     {/* Demo Warning Label */}
                     {activeLesson?.isDemo && (
@@ -256,19 +263,21 @@ const LearningResources = () => {
                         </div>
                         
                         <div className="divide-y divide-gray-100 overflow-y-auto max-h-[500px]">
-                            {activeModule.lessons?.map((lesson) => (
+                            {activeModule.lessons?.map((lesson) => {
+                                const lStatus = getLessonStatus(lesson._id);
+                                return (
                                 <button 
                                     key={lesson._id} 
                                     onClick={() => handleSelectLesson(lesson)}
                                     className={`w-full text-left p-4 flex items-center transition-colors ${activeLesson?._id === lesson._id ? 'bg-ihfcOrange/5 border-l-4 border-l-ihfcOrange' : 'hover:bg-gray-50 border-l-4 border-l-transparent'}`}
                                 >
                                     <div className="mr-4">
-                                        {activeLesson?._id === lesson._id ? (
+                                        {lStatus.status === 'completed' ? (
+                                            <CheckCircle className="w-6 h-6 text-green-500" />
+                                        ) : lStatus.status === 'in_progress' ? (
                                             <PlayCircle className="w-6 h-6 text-ihfcOrange" />
-                                        ) : lesson.videoProvider === 'youtube' ? (
-                                            <Video className="w-6 h-6 text-gray-400" />
                                         ) : (
-                                            <CheckCircle className="w-6 h-6 text-gray-300" />
+                                            <Circle className="w-6 h-6 text-gray-300" />
                                         )}
                                     </div>
                                     <div className="flex-1">
@@ -276,11 +285,11 @@ const LearningResources = () => {
                                             {lesson.title} {lesson.isDemo ? '(Demo)' : ''}
                                         </h4>
                                         <p className="text-xs text-gray-500 mt-1">
-                                            {lesson.videoProvider === 'youtube' ? 'YouTube Resource' : lesson.videoUrl ? 'Authorized Video' : 'Coming Soon'}
+                                            {lStatus.status === 'in_progress' ? `${Math.round(lStatus.watchedPercent)}% watched` : lStatus.status === 'not_started' ? 'Not Started' : 'Completed'}
                                         </p>
                                     </div>
                                 </button>
-                            ))}
+                            )})}
                         </div>
                     </div>
                 </div>

@@ -4,26 +4,26 @@ export const courseData = {
     provider: "Simplilearn",
     collaboration: "Microsoft",
     duration: "11 Months",
-    startDate: "01/09/2026",
+    startDate: "28/09/2026",
     completionDate: "01/08/2027",
     mode: "Online / Live Learning",
     certification: "IHFC, TIH of IIT Delhi Certified Program",
     modules: [
-        { id: '1', number: '01', title: "Program Induction", status: "completed" },
-        { id: '2', number: '02', title: "Python Refresher With AI", status: "completed" },
-        { id: '3', number: '03', title: "Applied Data Science With Python", status: "current", description: "Building on a strong Python foundation, this module introduces core data science principles.", skills: ["Python", "NumPy", "Pandas", "Matplotlib"] },
-        { id: '4', number: '04', title: "Machine Learning", status: "upcoming", description: "ML fundamentals and frameworks" },
-        { id: '5', number: '05', title: "Deep Learning Specialization", status: "upcoming", description: "Neural networks and deep learning" },
-        { id: '6', number: '06', title: "GenAI Literacy", status: "upcoming", description: "Foundational GenAI applications" },
-        { id: '7', number: '07', title: "Advanced Generative AI", status: "upcoming", description: "Advanced generative models and architectures" },
-        { id: '8', number: '08', title: "Capstone Project", status: "upcoming", description: "Final end-to-end program project" }
+        { id: '1', number: '01', title: "Program Induction", status: "not_started" },
+        { id: '2', number: '02', title: "Python Refresher With AI", status: "not_started" },
+        { id: '3', number: '03', title: "Applied Data Science With Python", status: "not_started", description: "Building on a strong Python foundation, this module introduces core data science principles.", skills: ["Python", "NumPy", "Pandas", "Matplotlib"] },
+        { id: '4', number: '04', title: "Machine Learning", status: "not_started", description: "ML fundamentals and frameworks" },
+        { id: '5', number: '05', title: "Deep Learning Specialization", status: "not_started", description: "Neural networks and deep learning" },
+        { id: '6', number: '06', title: "GenAI Literacy", status: "not_started", description: "Foundational GenAI applications" },
+        { id: '7', number: '07', title: "Advanced Generative AI", status: "not_started", description: "Advanced generative models and architectures" },
+        { id: '8', number: '08', title: "Capstone Project", status: "not_started", description: "Final end-to-end program project" }
     ]
 };
 
 export const progressData = {
-    completedModules: 2,
+    completedModules: 0,
     totalModules: 8,
-    percentage: 25,
+    percentage: 0,
     certificatesEarned: 0
 };
 

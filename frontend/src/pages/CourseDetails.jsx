@@ -61,7 +61,7 @@ const CourseDetails = () => {
                         <div className="bg-gray-50 border border-gray-100 p-5 rounded-xl space-y-4">
                             <div className="flex justify-between items-center pb-3 border-b border-gray-200/60">
                                 <span className="text-gray-500 text-sm font-medium">Start Date</span>
-                                <span className="font-bold text-gray-900">01/09/2026</span>
+                                <span className="font-bold text-gray-900">28/09/2026</span>
                             </div>
                             <div className="flex justify-between items-center pb-3 border-b border-gray-200/60">
                                 <span className="text-gray-500 text-sm font-medium">Duration</span>

@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, AuthContext } from './context/AuthContext';
+import { ProgressProvider } from './context/ProgressContext';
 import { useContext } from 'react';
 
 import Login from './pages/Login';
@@ -25,27 +26,29 @@ const ProtectedRoute = ({ children, role }) => {
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          
-          <Route path="/" element={<ProtectedRoute><SidebarLayout /></ProtectedRoute>}>
-            <Route index element={<Dashboard />} />
-            <Route path="course" element={<CourseDetails />} />
-            <Route path="learning-path" element={<LearningPath />} />
-            <Route path="learning-resources" element={<LearningResources />} />
-            <Route path="payments" element={<Payments />} />
-            <Route path="payment/final-installment" element={<PaymentCheckout />} />
-            <Route path="documents" element={<Documents />} />
-            <Route path="profile" element={<Profile />} />
-          </Route>
+      <ProgressProvider>
+        <Router>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            
+            <Route path="/" element={<ProtectedRoute><SidebarLayout /></ProtectedRoute>}>
+              <Route index element={<Dashboard />} />
+              <Route path="course" element={<CourseDetails />} />
+              <Route path="learning-path" element={<LearningPath />} />
+              <Route path="learning-resources" element={<LearningResources />} />
+              <Route path="payments" element={<Payments />} />
+              <Route path="payment/final-installment" element={<PaymentCheckout />} />
+              <Route path="documents" element={<Documents />} />
+              <Route path="profile" element={<Profile />} />
+            </Route>
 
-          <Route path="/admin" element={<ProtectedRoute role="admin"><SidebarLayout /></ProtectedRoute>}>
-            <Route index element={<AdminPanel />} />
-          </Route>
+            <Route path="/admin" element={<ProtectedRoute role="admin"><SidebarLayout /></ProtectedRoute>}>
+              <Route index element={<AdminPanel />} />
+            </Route>
 
-        </Routes>
-      </Router>
+          </Routes>
+        </Router>
+      </ProgressProvider>
     </AuthProvider>
   );
 }
