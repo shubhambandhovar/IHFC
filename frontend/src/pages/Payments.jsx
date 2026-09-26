@@ -1,46 +1,293 @@
-import React, { useEffect, useState, useContext } from 'react';
-import axios from 'axios';
-import { AuthContext } from '../context/AuthContext';
-import { Download, AlertCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import { Download, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 
 const Payments = () => {
-    const [payments, setPayments] = useState([]);
-    const { user } = useContext(AuthContext);
+    const [generatingId, setGeneratingId] = useState(null);
+    const [toastMessage, setToastMessage] = useState('');
 
-    useEffect(() => {
-        const fetchPayments = async () => {
-            try {
-                const { data } = await axios.get('https://ihfc.onrender.com/api/student/payments', {
-                    headers: { Authorization: `Bearer ${user.token}` }
-                });
-                setPayments(data);
-            } catch(e) {
-                setPayments([
-                    { _id: '1', feeType: 'Registration Fee', amountDue: 25000, amountPaid: 25000, dueDate: 'March 01, 2026', status: 'Paid', receiptNumber: 'IHF2026-100234', transactionId: '123456789012' },
-                    { _id: '2', feeType: 'Installment 1', amountDue: 25000, amountPaid: 25000, dueDate: 'April 01, 2026', status: 'Paid', receiptNumber: 'IHF2026-200345', transactionId: '987654321098' },
-                    { _id: '3', feeType: 'Installment 2', amountDue: 25000, amountPaid: 25000, dueDate: 'May 01, 2026', status: 'Paid', receiptNumber: 'IHF2026-395467', transactionId: '648607195311' },
-                    { _id: '4', feeType: 'Installment 3', amountDue: 25000, amountPaid: 25000, dueDate: 'June 01, 2026', status: 'Paid', receiptNumber: 'IHF2026-496697', transactionId: '836809733546' },
-                    { _id: '5', feeType: 'Final Installment', amountDue: 53000, amountPaid: 0, dueDate: 'Upon Completion', status: 'Pending' }
-                ]);
-            }
-        };
-        fetchPayments();
-    }, [user]);
+    const payments = [
+        { 
+            _id: '1', 
+            feeType: 'Registration Fee', 
+            amountDue: 25000, 
+            amountPaid: 25000, 
+            dueDate: 'March 01, 2026', 
+            status: 'Paid', 
+            receiptNumber: 'IHF2026-067782', 
+            transactionId: '605484104031',
+            paymentTime: '09:08 PM',
+            paymentMode: 'UPI',
+            description: 'Registration Fee for Advanced Certification in\nGenerative AI & Machine Learning for Robotics',
+            fileName: 'receipt-registration-fee.jpg'
+        },
+        { 
+            _id: '2', 
+            feeType: 'Installment 1', 
+            amountDue: 25000, 
+            amountPaid: 25000, 
+            dueDate: 'April 01, 2026', 
+            status: 'Paid', 
+            receiptNumber: 'IHF2026-176397', 
+            transactionId: '742791681820',
+            paymentTime: '07:47 AM',
+            paymentMode: 'eNach/AutoDebit',
+            description: 'Installment 1 for Advanced Certification in\nGenerative AI & Machine Learning for Robotics',
+            fileName: 'receipt-installment-1.jpg'
+        },
+        { 
+            _id: '3', 
+            feeType: 'Installment 2', 
+            amountDue: 25000, 
+            amountPaid: 25000, 
+            dueDate: 'May 01, 2026', 
+            status: 'Paid', 
+            receiptNumber: 'IHF2026-395467', 
+            transactionId: '648607195311',
+            paymentTime: '08:56 AM',
+            paymentMode: 'eNach/AutoDebit',
+            description: 'Installment 2 for Advanced Certification in\nGenerative AI & Machine Learning for Robotics',
+            fileName: 'receipt-installment-2.jpg'
+        },
+        { 
+            _id: '4', 
+            feeType: 'Installment 3', 
+            amountDue: 25000, 
+            amountPaid: 25000, 
+            dueDate: 'June 01, 2026', 
+            status: 'Paid', 
+            receiptNumber: 'IHF2026-496697', 
+            transactionId: '836809733546',
+            paymentTime: '09:57 AM',
+            paymentMode: 'eNach/AutoDebit',
+            description: 'Installment 3 for Advanced Certification in\nGenerative AI & Machine Learning for Robotics',
+            fileName: 'receipt-installment-3.jpg'
+        },
+        { 
+            _id: '5', 
+            feeType: 'Final Installment', 
+            amountDue: 53000, 
+            amountPaid: 0, 
+            dueDate: 'Upon Completion', 
+            status: 'Pending' 
+        }
+    ];
+
+    const generateReceipt = async (payment) => {
+        setGeneratingId(payment._id);
+        
+        // Brief timeout to allow React to render loading state
+        await new Promise(resolve => setTimeout(resolve, 50));
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 1200;
+        canvas.height = 1700;
+        const ctx = canvas.getContext('2d');
+
+        // Background
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, 1200, 1700);
+
+        // Watermark - Top Header
+        ctx.fillStyle = '#ef4444'; // red-500
+        ctx.fillRect(0, 0, 1200, 60);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 24px Arial, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('SAMPLE / DEMO — NOT A VALID PAYMENT RECEIPT', 600, 40);
+
+        // Watermark - Bottom Footer
+        ctx.fillStyle = '#ef4444'; 
+        ctx.fillRect(0, 1580, 1200, 120);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 28px Arial, sans-serif';
+        ctx.fillText('SAMPLE / DEMO — NOT A VALID PAYMENT RECEIPT', 600, 1630);
+        ctx.font = '20px Arial, sans-serif';
+        ctx.fillText('This image is generated by the student portal for demonstration/UI purposes only.', 600, 1670);
+
+        // Watermark - Diagonal Background
+        ctx.save();
+        ctx.translate(600, 850);
+        ctx.rotate(-Math.PI / 4);
+        ctx.fillStyle = 'rgba(239, 68, 68, 0.08)'; // faint red
+        ctx.font = 'bold 160px Arial, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('SAMPLE / DEMO', 0, 0);
+        ctx.restore();
+
+        // Title Section
+        ctx.fillStyle = '#1e293b'; // slate-800
+        ctx.font = 'bold 56px Arial, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText('IHFC Portal', 100, 180);
+
+        ctx.fillStyle = '#64748b'; // slate-500
+        ctx.font = '32px Arial, sans-serif';
+        ctx.fillText('Professional Certificate Program in', 100, 240);
+        ctx.fillText('Generative AI, Machine Learning,', 100, 290);
+        ctx.fillText('and Intelligent Automation', 100, 340);
+
+        // Divider
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(100, 400);
+        ctx.lineTo(1100, 400);
+        ctx.stroke();
+
+        // PAYMENT RECEIPT
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 44px Arial, sans-serif';
+        ctx.fillText('PAYMENT RECEIPT', 100, 480);
+
+        // STUDENT DETAILS
+        ctx.fillStyle = '#f8fafc'; // slate-50
+        ctx.fillRect(100, 520, 1000, 220);
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.strokeRect(100, 520, 1000, 220);
+        
+        ctx.fillStyle = '#334155'; // slate-700
+        ctx.font = 'bold 24px Arial, sans-serif';
+        ctx.fillText('STUDENT DETAILS', 140, 570);
+
+        ctx.font = '22px Arial, sans-serif';
+        ctx.fillStyle = '#64748b';
+        ctx.fillText('Student Name:', 140, 630);
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 24px Arial, sans-serif';
+        ctx.fillText('Shubham Shrivastava', 140, 665);
+
+        ctx.font = '22px Arial, sans-serif';
+        ctx.fillStyle = '#64748b';
+        ctx.fillText('Student ID:', 600, 630);
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 24px Arial, sans-serif';
+        ctx.fillText('IHFC2026-001', 600, 665);
+
+        ctx.font = '22px Arial, sans-serif';
+        ctx.fillStyle = '#64748b';
+        ctx.fillText('Mobile:', 850, 630);
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 24px Arial, sans-serif';
+        ctx.fillText('+91 7354255105', 850, 665);
+
+        // PAYMENT DETAILS
+        ctx.fillStyle = '#f8fafc'; 
+        ctx.fillRect(100, 780, 1000, 360);
+        ctx.strokeRect(100, 780, 1000, 360);
+
+        ctx.fillStyle = '#334155';
+        ctx.font = 'bold 24px Arial, sans-serif';
+        ctx.fillText('PAYMENT DETAILS', 140, 830);
+
+        // Column 1
+        ctx.font = '22px Arial, sans-serif';
+        ctx.fillStyle = '#64748b';
+        ctx.fillText('Receipt Number:', 140, 890);
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 24px Arial, sans-serif';
+        ctx.fillText(payment.receiptNumber, 140, 925);
+
+        ctx.font = '22px Arial, sans-serif';
+        ctx.fillStyle = '#64748b';
+        ctx.fillText('Payment Date:', 140, 990);
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 24px Arial, sans-serif';
+        ctx.fillText(payment.dueDate, 140, 1025);
+
+        ctx.font = '22px Arial, sans-serif';
+        ctx.fillStyle = '#64748b';
+        ctx.fillText('Payment Time:', 140, 1090);
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 24px Arial, sans-serif';
+        ctx.fillText(payment.paymentTime, 140, 1125);
+
+        // Column 2
+        ctx.font = '22px Arial, sans-serif';
+        ctx.fillStyle = '#64748b';
+        ctx.fillText('Payment Amount:', 600, 890);
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 24px Arial, sans-serif';
+        ctx.fillText(`₹${payment.amountPaid.toLocaleString()}.00`, 600, 925);
+
+        ctx.font = '22px Arial, sans-serif';
+        ctx.fillStyle = '#64748b';
+        ctx.fillText('Payment Mode:', 600, 990);
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 24px Arial, sans-serif';
+        ctx.fillText(payment.paymentMode, 600, 1025);
+
+        ctx.font = '22px Arial, sans-serif';
+        ctx.fillStyle = '#64748b';
+        ctx.fillText('Transaction ID:', 600, 1090);
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 24px Arial, sans-serif';
+        ctx.fillText(payment.transactionId, 600, 1125);
+
+        ctx.fillStyle = '#0f172a';
+        ctx.font = '22px Arial, sans-serif';
+        ctx.fillText('Payment Status: ', 850, 890);
+        ctx.fillStyle = '#16a34a'; // green
+        ctx.font = 'bold 24px Arial, sans-serif';
+        ctx.fillText('PAID', 850, 925);
+
+        // DESCRIPTION
+        ctx.fillStyle = '#334155';
+        ctx.font = 'bold 24px Arial, sans-serif';
+        ctx.fillText('DESCRIPTION', 100, 1220);
+
+        ctx.font = '24px Arial, sans-serif';
+        ctx.fillStyle = '#475569';
+        const lines = payment.description.split('\n');
+        ctx.fillText(lines[0], 100, 1260);
+        if(lines[1]) ctx.fillText(lines[1], 120, 1295);
+
+        // Divider
+        ctx.beginPath();
+        ctx.moveTo(100, 1360);
+        ctx.lineTo(1100, 1360);
+        ctx.stroke();
+
+        // TOTAL PAID
+        ctx.fillStyle = '#334155';
+        ctx.font = 'bold 28px Arial, sans-serif';
+        ctx.fillText('TOTAL PAID', 100, 1430);
+
+        ctx.textAlign = 'right';
+        ctx.fillStyle = '#16a34a'; // green-600
+        ctx.font = 'bold 42px Arial, sans-serif';
+        ctx.fillText(`₹${payment.amountPaid.toLocaleString()}.00`, 1100, 1435);
+
+        // Trigger Download
+        canvas.toBlob((blob) => {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = payment.fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            setGeneratingId(null);
+            setToastMessage('Receipt downloaded successfully.');
+            setTimeout(() => setToastMessage(''), 3500);
+        }, 'image/jpeg', 0.95);
+    };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 relative">
             <h1 className="text-3xl font-bold text-gray-900">Payments & Receipts</h1>
             
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <div className="p-6 border-b border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center bg-gray-50 gap-4">
                     <h2 className="text-xl font-bold text-gray-900">Installment Details</h2>
-                    <div className="flex items-center text-ihfcOrange">
-                        <AlertCircle className="w-5 h-5 mr-2" />
+                    <div className="flex items-center text-ihfcOrange bg-orange-50 px-4 py-2 rounded-lg border border-orange-100">
+                        <AlertCircle className="w-5 h-5 mr-2 shrink-0" />
                         <span className="text-sm font-medium">Final installment due upon completion</span>
                     </div>
                 </div>
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
+                    <table className="w-full text-left border-collapse min-w-[800px]">
                         <thead>
                             <tr className="bg-gray-50 text-gray-600 border-b border-gray-200">
                                 <th className="p-4 font-semibold text-sm">Installment</th>
@@ -66,24 +313,37 @@ const Payments = () => {
                                         {payment.amountDue > payment.amountPaid ? `₹${(payment.amountDue - payment.amountPaid).toLocaleString()}` : '-'}
                                     </td>
                                     <td className="p-4 text-center">
-                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${
                                             payment.status === 'Paid' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                                         }`}>
                                             {payment.status}
                                         </span>
                                     </td>
                                     <td className="p-4 text-center">
-                                        {payment.status === 'Paid' && payment.receiptNumber && (
-                                            <button className="text-simpliBlue hover:text-blue-800 flex items-center justify-center mx-auto transition-colors" title={`Receipt: ${payment.receiptNumber}`}>
-                                                <Download className="w-5 h-5 mr-1" />
-                                                <span className="text-xs">Receipt</span>
+                                        {payment.status === 'Paid' && payment.fileName ? (
+                                            <button 
+                                                onClick={() => generateReceipt(payment)}
+                                                disabled={generatingId !== null}
+                                                className="text-ihfcDark hover:text-ihfcOrange font-semibold flex items-center justify-center mx-auto transition-colors md:flex-row flex-col gap-1 disabled:opacity-50"
+                                                title={`Download Receipt: ${payment.receiptNumber}`}
+                                            >
+                                                {generatingId === payment._id ? (
+                                                    <>
+                                                        <Loader2 className="w-5 h-5 animate-spin text-ihfcOrange" />
+                                                        <span className="text-xs md:ml-1 text-ihfcOrange">Generating...</span>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Download className="w-5 h-5" />
+                                                        <span className="text-xs md:ml-1">Receipt</span>
+                                                    </>
+                                                )}
                                             </button>
-                                        )}
-                                        {payment.status !== 'Paid' && (
-                                            <button className="bg-ihfcOrange text-white px-3 py-1 rounded text-sm hover:bg-orange-600 transition-colors">
+                                        ) : payment.status !== 'Paid' ? (
+                                            <button className="bg-ihfcOrange text-white px-4 py-1.5 rounded-md text-sm font-bold shadow-sm hover:bg-orange-600 hover:shadow transition-all">
                                                 Pay Now
                                             </button>
-                                        )}
+                                        ) : null}
                                     </td>
                                 </tr>
                             ))}
@@ -91,6 +351,14 @@ const Payments = () => {
                     </table>
                 </div>
             </div>
+
+            {/* Success Toast */}
+            {toastMessage && (
+                <div className="fixed bottom-6 right-6 bg-gray-900 text-white px-6 py-3 rounded-lg shadow-xl flex items-center gap-3 animate-fade-in z-50">
+                    <CheckCircle className="w-5 h-5 text-green-400" />
+                    <span className="font-medium text-sm">{toastMessage}</span>
+                </div>
+            )}
         </div>
     );
 };
