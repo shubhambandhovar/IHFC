@@ -10,6 +10,7 @@ import Payments from './pages/Payments';
 import Documents from './pages/Documents';
 import Profile from './pages/Profile';
 import AdminPanel from './pages/AdminPanel';
+import LearningResources from './pages/LearningResources';
 import SidebarLayout from './components/SidebarLayout';
 
 const ProtectedRoute = ({ children, role }) => {
@@ -31,6 +32,7 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path="course" element={<CourseDetails />} />
             <Route path="learning-path" element={<LearningPath />} />
+            <Route path="resources" element={<LearningResources />} />
             <Route path="payments" element={<Payments />} />
             <Route path="documents" element={<Documents />} />
             <Route path="profile" element={<Profile />} />
