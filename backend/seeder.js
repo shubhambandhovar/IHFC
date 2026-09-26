@@ -16,8 +16,8 @@ const importData = async () => {
             studentId: 'IHFC2026-001',
             enrollmentNumber: 'ENR-2026-4589',
             name: 'Shubham Shrivastava',
-            email: 'shubham@example.com',
-            password: 'password123',
+            email: 'shubham.shrivastava@ihfc.in',
+            password: 'Shubham@55105',
             role: 'student',
             courseDetails: {
                 programName: 'Professional Certificate Program in Generative AI, Machine Learning, and Intelligent Automation',
