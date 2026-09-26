@@ -3,9 +3,21 @@ import { PlayCircle, CheckCircle, Video } from 'lucide-react';
 
 const modules = [
     {
+        id: 'ihfc-induction',
+        title: 'Program Induction & Overview',
+        type: 'official',
+        videoProvider: 'self-hosted',
+        videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4', // Placeholder self-hosted video
+        thumbnail: '',
+        duration: '10:00',
+        instructor: 'IHFC Academic Team',
+        lessons: ['Welcome to IHFC', 'Platform Tour', 'Curriculum Overview']
+    },
+    {
         id: 'python-data-science',
         title: 'Python & Data Science',
-        type: 'playlist',
+        type: 'supplementary',
+        videoProvider: 'youtube',
         embedUrl: 'https://www.youtube.com/embed/videoseries?list=PLZoTAELRMXVNUL99R4bDlVYsncUNvwUBB',
         instructor: 'Krish Naik',
         lessons: ['Introduction to Python', 'Pandas Tutorial', 'NumPy Basics', 'Matplotlib & Seaborn', 'Data Preprocessing']
@@ -13,7 +25,8 @@ const modules = [
     {
         id: 'machine-learning',
         title: 'Machine Learning',
-        type: 'playlist',
+        type: 'supplementary',
+        videoProvider: 'youtube',
         embedUrl: 'https://www.youtube.com/embed/videoseries?list=PLZoTAELRMXVPBTrWtJkn3wWQxZkmTXGwe',
         instructor: 'Krish Naik',
         lessons: ['Introduction', 'Regression', 'Classification', 'Clustering', 'Ensemble Learning']
@@ -21,7 +34,8 @@ const modules = [
     {
         id: 'deep-learning',
         title: 'Deep Learning',
-        type: 'playlist',
+        type: 'supplementary',
+        videoProvider: 'youtube',
         embedUrl: 'https://www.youtube.com/embed/videoseries?list=PLZoTAELRMXVPGU70ZGsckrMdr0FteeRUi',
         instructor: 'Krish Naik',
         lessons: ['Neural Networks', 'Forward & Backpropagation', 'Activation Functions', 'CNNs', 'RNNs']
@@ -29,7 +43,8 @@ const modules = [
     {
         id: 'generative-ai',
         title: 'Generative AI',
-        type: 'video',
+        type: 'supplementary',
+        videoProvider: 'youtube',
         embedUrl: 'https://www.youtube.com/embed/pSVk-5WemQ0',
         instructor: 'Simplilearn',
         lessons: ['Generative AI Full Course']
@@ -37,7 +52,8 @@ const modules = [
     {
         id: 'advanced-generative-ai',
         title: 'Advanced Generative AI / LangChain',
-        type: 'playlist',
+        type: 'supplementary',
+        videoProvider: 'youtube',
         embedUrl: 'https://www.youtube.com/embed/videoseries?list=PLKnIA16_RmvaTbihpo4MtzVm4XOQa0ER0',
         instructor: 'CampusX',
         lessons: ['LangChain Introduction', 'LLM Wrappers', 'Prompt Templates', 'Chains', 'Agents']
@@ -45,15 +61,17 @@ const modules = [
     {
         id: 'rag-ai-agents',
         title: 'RAG & AI Agents',
-        type: 'video',
-        embedUrl: 'https://www.youtube.com/embed/pSVk-5WemQ0', // Placeholder using GenAI video
+        type: 'supplementary',
+        videoProvider: 'youtube',
+        embedUrl: 'https://www.youtube.com/embed/pSVk-5WemQ0',
         instructor: 'Industry Experts',
         lessons: ['Retrieval Augmented Generation Basics', 'Building AI Agents']
     },
     {
         id: 'nlp',
         title: 'Natural Language Processing',
-        type: 'playlist',
+        type: 'supplementary',
+        videoProvider: 'youtube',
         embedUrl: 'https://www.youtube.com/embed/videoseries?list=PLZoTAELRMXVNNrHSKv36Lr3_156yCo6Nn',
         instructor: 'Krish Naik',
         lessons: ['Text Preprocessing', 'Bag of Words', 'TF-IDF', 'Word2Vec', 'Transformers']
@@ -95,7 +113,9 @@ const LearningResources = () => {
                             className={`w-full text-left p-4 rounded-xl border transition-all ${activeModule.id === mod.id ? 'bg-ihfcDark text-white border-ihfcDark shadow-md' : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300 hover:bg-gray-50'}`}
                         >
                             <h4 className="font-semibold">{mod.title}</h4>
-                            <p className={`text-xs mt-1 ${activeModule.id === mod.id ? 'text-gray-300' : 'text-gray-500'}`}>{mod.instructor}</p>
+                            <p className={`text-xs mt-1 ${activeModule.id === mod.id ? 'text-gray-300' : 'text-gray-500'}`}>
+                                {mod.type === 'supplementary' ? `Supplementary Resource by ${mod.instructor}` : mod.instructor}
+                            </p>
                         </button>
                     ))}
                 </div>
@@ -105,20 +125,38 @@ const LearningResources = () => {
                     <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-xl">
                         <div>
                             <h2 className="text-2xl font-bold text-gray-900">{activeModule.title}</h2>
-                            <p className="text-gray-500">{activeModule.instructor}</p>
+                            <p className="text-gray-500">
+                                {activeModule.type === 'supplementary' ? `Supplementary Resource by ${activeModule.instructor}` : activeModule.instructor}
+                            </p>
                         </div>
+                        {activeModule.type === 'supplementary' && (
+                            <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded border border-blue-200">
+                                Third-Party Content
+                            </span>
+                        )}
                     </div>
                     
                     <div className="p-6">
                         <div className="aspect-video w-full rounded-lg overflow-hidden bg-black shadow-lg border border-gray-200">
-                            <iframe 
-                                className="w-full h-full"
-                                src={activeModule.embedUrl} 
-                                title={activeModule.title} 
-                                frameBorder="0" 
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                allowFullScreen
-                            ></iframe>
+                            {activeModule.videoProvider === 'self-hosted' ? (
+                                <video 
+                                    className="w-full h-full object-cover" 
+                                    controls 
+                                    preload="metadata"
+                                >
+                                    <source src={activeModule.videoUrl} type="video/mp4" />
+                                    Your browser does not support the video tag.
+                                </video>
+                            ) : (
+                                <iframe 
+                                    className="w-full h-full"
+                                    src={activeModule.embedUrl} 
+                                    title={activeModule.title} 
+                                    frameBorder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allowFullScreen
+                                ></iframe>
+                            )}
                         </div>
 
                         <div className="mt-8">
@@ -149,8 +187,8 @@ const LearningResources = () => {
                 </div>
             </div>
 
-            <p className="text-xs text-gray-400 text-center mt-12 max-w-3xl mx-auto">
-                Supplementary learning resources are provided through embedded third-party video content. These resources are intended for additional learning and are not a replacement for the official program curriculum, live sessions, assignments, projects or assessments.
+            <p className="text-xs text-gray-400 text-center mt-12 max-w-3xl mx-auto border-t pt-6">
+                Supplementary learning resources are provided through embedded third-party video content. These resources are intended for additional learning and are not a replacement for the official program curriculum, live sessions, assignments, projects or assessments. Please note that third-party instructors are independent creators and not official IHFC/IIT Delhi faculty.
             </p>
         </div>
     );
