@@ -2,33 +2,34 @@ import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { CheckCircle2, Circle, PlayCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const LearningPath = () => {
     const [path, setPath] = useState([]);
     const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchPath = async () => {
-            try {
-                const { data } = await axios.get('https://ihfc.onrender.com/api/student/learning-path', {
-                    headers: { Authorization: `Bearer ${user.token}` }
-                });
-                setPath(data);
-            } catch(e) {
-                setPath([
-                    { id: 1, title: 'Program Induction', description: 'Step into a unique learning experience', status: 'completed' },
-                    { id: 2, title: 'Python Refresher With AI', description: 'Essential programming skills', status: 'completed' },
-                    { id: 3, title: 'Applied Data Science With Python', description: 'Data science principles', status: 'in-progress' },
-                    { id: 4, title: 'Machine Learning', description: 'ML fundamentals and frameworks', status: 'pending' },
-                    { id: 5, title: 'Deep Learning Specialization', description: 'Neural networks and deep learning', status: 'pending' },
-                    { id: 6, title: 'GenAI Literacy', description: 'Foundational GenAI applications', status: 'pending' },
-                    { id: 7, title: 'Advanced Generative AI', description: 'Large language models and architectures', status: 'pending' },
-                    { id: 8, title: 'Capstone Project', description: 'Real-world business challenge', status: 'pending' }
-                ]);
-            }
-        };
-        fetchPath();
-    }, [user]);
+        // Strict mapping requested by the user
+        const hardcodedPath = [
+            { id: 1, title: 'Program Induction', description: 'Step into a unique learning experience', status: 'completed', resourceId: null },
+            { id: 2, title: 'Python Refresher With AI', description: 'Essential programming skills', status: 'completed', resourceId: null },
+            { id: 3, title: 'Applied Data Science With Python', description: 'Data science principles', status: 'in-progress', resourceId: null },
+            { id: 4, title: 'Machine Learning', description: 'Machine learning fundamentals and frameworks', status: 'in-progress', resourceId: '1' },
+            { id: 5, title: 'Deep Learning Specialization', description: 'Neural networks and deep learning', status: 'pending', resourceId: '2' },
+            { id: 6, title: 'GenAI Literacy', description: 'Foundational Generative AI applications', status: 'pending', resourceId: '3' },
+            { id: 7, title: 'Advanced Generative AI', description: 'Large language models and architectures', status: 'pending', resourceId: '4' },
+            { id: 8, title: 'Natural Language Processing (NLP)', description: 'Natural Language Processing techniques and transformers', status: 'pending', resourceId: '5' },
+            { id: 9, title: 'Capstone Project', description: 'Real-world business challenge', status: 'pending', resourceId: null }
+        ];
+        setPath(hardcodedPath);
+    }, []);
+
+    const handleContinue = (resourceId) => {
+        if (resourceId) {
+            navigate(`/learning-resources?module=${resourceId}`);
+        }
+    };
 
     return (
         <div className="space-y-6">
@@ -49,10 +50,18 @@ const LearningPath = () => {
                                     {item.title}
                                 </h3>
                                 <p className="text-gray-600 mt-1">{item.description}</p>
-                                {item.status === 'in-progress' && (
-                                    <button className="mt-3 px-4 py-2 bg-ihfcOrange text-white rounded-lg text-sm font-medium hover:bg-orange-600 transition-colors">
+                                
+                                {item.resourceId ? (
+                                    <button 
+                                        onClick={() => handleContinue(item.resourceId)}
+                                        className="mt-3 px-4 py-2 bg-ihfcOrange text-white rounded-lg text-sm font-medium hover:bg-orange-600 transition-colors"
+                                    >
                                         Continue Learning
                                     </button>
+                                ) : (
+                                    <div className="mt-3 px-4 py-2 bg-gray-100 text-gray-500 rounded-lg text-sm font-medium inline-block cursor-not-allowed">
+                                        Resources Coming Soon
+                                    </div>
                                 )}
                             </div>
                         </div>

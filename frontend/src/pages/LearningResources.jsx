@@ -3,9 +3,11 @@ import { PlayCircle, CheckCircle, Video, Clock, AlertTriangle } from 'lucide-rea
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { fallbackModules as initialFallbackModules } from '../data/fallbackData';
+import { useSearchParams } from 'react-router-dom';
 
 const LearningResources = () => {
     const { user } = useContext(AuthContext);
+    const [searchParams] = useSearchParams();
     const [modules, setModules] = useState([]);
     const [activeModule, setActiveModule] = useState(null);
     const [activeLesson, setActiveLesson] = useState(null);
@@ -22,8 +24,13 @@ const LearningResources = () => {
                 
                 if (data && data.length > 0) {
                     setModules(data);
-                    setActiveModule(data[0]);
-                    if (data[0].lessons?.length > 0) setActiveLesson(data[0].lessons[0]);
+                    const targetModuleId = searchParams.get('module');
+                    const initialModule = targetModuleId 
+                        ? data.find(m => m._id === targetModuleId) || data[0]
+                        : data[0];
+                        
+                    setActiveModule(initialModule);
+                    if (initialModule.lessons?.length > 0) setActiveLesson(initialModule.lessons[0]);
                 } else {
                     loadFallback();
                 }
@@ -37,12 +44,18 @@ const LearningResources = () => {
 
         const loadFallback = () => {
             setModules(initialFallbackModules);
-            setActiveModule(initialFallbackModules[0]);
-            setActiveLesson(initialFallbackModules[0].lessons[0]);
+            
+            const targetModuleId = searchParams.get('module');
+            const initialModule = targetModuleId 
+                ? initialFallbackModules.find(m => m._id === targetModuleId) || initialFallbackModules[0]
+                : initialFallbackModules[0];
+
+            setActiveModule(initialModule);
+            if (initialModule.lessons?.length > 0) setActiveLesson(initialModule.lessons[0]);
         };
 
         fetchModules();
-    }, [user.token]);
+    }, [user.token, searchParams]);
 
     const handleSelectModule = (mod) => {
         setActiveModule(mod);
