@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { PlayCircle, CheckCircle, Video, Clock, AlertTriangle, Youtube } from 'lucide-react';
+import { PlayCircle, CheckCircle, Video, Clock, AlertTriangle } from 'lucide-react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { fallbackModules as initialFallbackModules } from '../data/fallbackData';
@@ -232,7 +232,7 @@ const LearningResources = () => {
                                         {activeLesson?._id === lesson._id ? (
                                             <PlayCircle className="w-6 h-6 text-ihfcOrange" />
                                         ) : lesson.videoProvider === 'youtube' ? (
-                                            <Youtube className="w-6 h-6 text-gray-400" />
+                                            <Video className="w-6 h-6 text-gray-400" />
                                         ) : (
                                             <CheckCircle className="w-6 h-6 text-gray-300" />
                                         )}
