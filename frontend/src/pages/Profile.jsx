@@ -22,13 +22,6 @@ const Profile = () => {
                     <h1 className="text-3xl font-bold text-gray-900">Student Profile</h1>
                     <p className="text-gray-600 mt-2">Manage your personal information and program details.</p>
                 </div>
-                <button 
-                    onClick={() => setIsEditModalOpen(true)}
-                    className="flex items-center justify-center px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-bold text-gray-700 shadow-sm hover:bg-gray-50 transition-colors"
-                >
-                    <Edit3 className="w-4 h-4 mr-2" />
-                    Edit Profile
-                </button>
             </div>
             
             {/* Header Card */}
