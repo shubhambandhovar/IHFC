@@ -14,7 +14,14 @@ const userSchema = mongoose.Schema({
         endDate: { type: String },
         duration: { type: String },
         progress: { type: Number, default: 0 }
-    }
+    },
+    lessonProgress: [{
+        lesson: { type: mongoose.Schema.Types.ObjectId, ref: 'Lesson' },
+        module: { type: mongoose.Schema.Types.ObjectId, ref: 'Module' },
+        completed: { type: Boolean, default: false },
+        playbackPosition: { type: Number, default: 0 },
+        lastWatchedAt: { type: Date }
+    }]
 }, { timestamps: true });
 
 userSchema.pre('save', async function (next) {
