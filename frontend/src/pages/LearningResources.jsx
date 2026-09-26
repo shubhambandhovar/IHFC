@@ -218,6 +218,7 @@ const LearningResources = () => {
                     <div className="bg-black rounded-xl overflow-hidden shadow-xl border border-gray-800 aspect-video relative group">
                         {activeLesson?.videoUrl ? (
                             <video
+                                key={activeLesson.videoUrl}
                                 ref={videoRef}
                                 className="w-full h-full object-cover"
                                 controls
