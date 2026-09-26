@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { PlayCircle, CheckCircle, Video, Play, Pause, Maximize, Volume2, Clock } from 'lucide-react';
+import { PlayCircle, CheckCircle, Video, Clock, AlertTriangle } from 'lucide-react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 
@@ -9,13 +9,12 @@ const LearningResources = () => {
     const [activeModule, setActiveModule] = useState(null);
     const [activeLesson, setActiveLesson] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [videoError, setVideoError] = useState(false);
     const videoRef = useRef(null);
 
     useEffect(() => {
         const fetchModules = async () => {
             try {
-                // If backend isn't populated, we'll use a local fallback for demonstration
-                // However, the architecture is ready to fetch from /api/learning/modules
                 const { data } = await axios.get('https://ihfc.onrender.com/api/learning/modules', {
                     headers: { Authorization: `Bearer ${user.token}` }
                 });
@@ -25,103 +24,62 @@ const LearningResources = () => {
                     setActiveModule(data[0]);
                     if (data[0].lessons?.length > 0) setActiveLesson(data[0].lessons[0]);
                 } else {
-                    // Fallback initial data structure as requested
-                    const fallbackModules = [
-                        {
-                            _id: '1',
-                            title: 'Machine Learning',
-                            instructor: 'Krish Naik',
-                            published: true,
-                            lessons: [
-                                { _id: 'l1', title: '01 Introduction to Machine Learning', videoProvider: 'self-hosted', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4' },
-                                { _id: 'l2', title: '02 Linear Regression', videoProvider: 'self-hosted', videoUrl: '' },
-                                { _id: 'l3', title: '03 Logistic Regression', videoProvider: 'self-hosted', videoUrl: '' },
-                                { _id: 'l4', title: '04 Decision Trees', videoProvider: 'self-hosted', videoUrl: '' },
-                            ]
-                        }
-                    ];
-                    setModules(fallbackModules);
-                    setActiveModule(fallbackModules[0]);
-                    setActiveLesson(fallbackModules[0].lessons[0]);
+                    loadFallback();
                 }
             } catch (error) {
                 console.error("Failed to fetch modules", error);
-                // Fallback if backend is down or unreachable
-                const fallbackModules = [
-                    {
-                        _id: '1',
-                        title: 'Python & Data Science',
-                        instructor: 'Krish Naik',
-                        published: true,
-                        lessons: [
-                            { _id: 'p1', title: '01 Introduction to Python', videoProvider: 'self-hosted', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4' },
-                            { _id: 'p2', title: '02 Pandas Tutorial', videoProvider: 'self-hosted', videoUrl: '' }
-                        ]
-                    },
-                    {
-                        _id: '2',
-                        title: 'Machine Learning',
-                        instructor: 'Krish Naik',
-                        published: true,
-                        lessons: [
-                            { _id: 'l1', title: '01 Introduction to Machine Learning', videoProvider: 'self-hosted', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4' },
-                            { _id: 'l2', title: '02 Linear Regression', videoProvider: 'self-hosted', videoUrl: '' },
-                            { _id: 'l3', title: '03 Logistic Regression', videoProvider: 'self-hosted', videoUrl: '' },
-                            { _id: 'l4', title: '04 Decision Trees', videoProvider: 'self-hosted', videoUrl: '' },
-                        ]
-                    },
-                    {
-                        _id: '3',
-                        title: 'Deep Learning',
-                        instructor: 'Krish Naik',
-                        published: true,
-                        lessons: [
-                            { _id: 'd1', title: '01 Neural Networks', videoProvider: 'self-hosted', videoUrl: '' }
-                        ]
-                    },
-                    {
-                        _id: '4',
-                        title: 'Generative AI',
-                        instructor: 'Simplilearn',
-                        published: true,
-                        lessons: [
-                            { _id: 'g1', title: '01 Generative AI Full Course', videoProvider: 'self-hosted', videoUrl: '' }
-                        ]
-                    },
-                    {
-                        _id: '5',
-                        title: 'Advanced Generative AI / LangChain',
-                        instructor: 'CampusX',
-                        published: true,
-                        lessons: [
-                            { _id: 'ag1', title: '01 LangChain Introduction', videoProvider: 'self-hosted', videoUrl: '' }
-                        ]
-                    },
-                    {
-                        _id: '6',
-                        title: 'RAG & AI Agents',
-                        instructor: 'Industry Experts',
-                        published: true,
-                        lessons: [
-                            { _id: 'r1', title: '01 RAG Basics', videoProvider: 'self-hosted', videoUrl: '' }
-                        ]
-                    },
-                    {
-                        _id: '7',
-                        title: 'Natural Language Processing',
-                        instructor: 'Krish Naik',
-                        published: true,
-                        lessons: [
-                            { _id: 'n1', title: '01 Text Preprocessing', videoProvider: 'self-hosted', videoUrl: '' }
-                        ]
-                    }
-                ];
-                setModules(fallbackModules);
-                setActiveModule(fallbackModules[0]);
-                setActiveLesson(fallbackModules[0].lessons[0]);
+                loadFallback();
             } finally {
                 setLoading(false);
             }
+        };
+
+        const loadFallback = () => {
+            const fallbackModules = [
+                {
+                    _id: '1',
+                    title: 'Python & Data Science',
+                    instructor: 'Krish Naik',
+                    published: true,
+                    lessons: [
+                        { _id: 'p1', title: '01 Introduction to Python', videoProvider: 'self-hosted', videoUrl: '' },
+                        { _id: 'p2', title: '02 Pandas Tutorial', videoProvider: 'self-hosted', videoUrl: '' }
+                    ]
+                },
+                {
+                    _id: '2',
+                    title: 'Machine Learning',
+                    instructor: 'Krish Naik',
+                    published: true,
+                    lessons: [
+                        { _id: 'l1', title: '01 Introduction to Machine Learning', videoProvider: 'self-hosted', videoUrl: '' },
+                        { _id: 'l2', title: '02 Linear Regression', videoProvider: 'self-hosted', videoUrl: '' },
+                        { _id: 'l3', title: '03 Logistic Regression', videoProvider: 'self-hosted', videoUrl: '' },
+                        { _id: 'l4', title: '04 Decision Trees', videoProvider: 'self-hosted', videoUrl: '' },
+                    ]
+                },
+                {
+                    _id: '3',
+                    title: 'Deep Learning',
+                    instructor: 'Krish Naik',
+                    published: true,
+                    lessons: [
+                        { _id: 'd1', title: '01 Neural Networks', videoProvider: 'self-hosted', videoUrl: '' }
+                    ]
+                },
+                {
+                    _id: '4',
+                    title: 'Generative AI',
+                    instructor: 'Simplilearn',
+                    published: true,
+                    lessons: [
+                        { _id: 'g1', title: '01 Generative AI Full Course', videoProvider: 'self-hosted', videoUrl: '' }
+                    ]
+                }
+            ];
+            setModules(fallbackModules);
+            setActiveModule(fallbackModules[0]);
+            setActiveLesson(fallbackModules[0].lessons[0]);
         };
 
         fetchModules();
@@ -133,8 +91,8 @@ const LearningResources = () => {
     };
 
     const handleSelectLesson = (lesson) => {
+        setVideoError(false);
         setActiveLesson(lesson);
-        // Track progress when selecting a new lesson
         trackProgress(lesson._id, false, 0);
     };
 
@@ -151,7 +109,6 @@ const LearningResources = () => {
 
     const handleTimeUpdate = () => {
         if (!videoRef.current || !activeLesson) return;
-        // Save progress every 10 seconds approx
         if (Math.floor(videoRef.current.currentTime) % 10 === 0) {
             trackProgress(activeLesson._id, false, videoRef.current.currentTime);
         }
@@ -160,17 +117,21 @@ const LearningResources = () => {
     const handleVideoEnded = () => {
         if (!activeLesson) return;
         trackProgress(activeLesson._id, true, videoRef.current.currentTime);
-        // Go to next lesson if available
         const currentIndex = activeModule.lessons.findIndex(l => l._id === activeLesson._id);
         if (currentIndex !== -1 && currentIndex < activeModule.lessons.length - 1) {
             setActiveLesson(activeModule.lessons[currentIndex + 1]);
         }
     };
 
+    const handleVideoError = (e) => {
+        console.error("Video Playback Error:", e);
+        setVideoError(true);
+    };
+
     if (loading) return <div className="p-8">Loading course architecture...</div>;
     if (!modules.length) return <div className="p-8">No learning resources available yet.</div>;
 
-    const completedLessons = 1; // Example derived from user context
+    const completedLessons = 1;
     const totalLessons = activeModule.lessons?.length || 1;
     const progressPercent = Math.round((completedLessons / totalLessons) * 100);
 
@@ -216,7 +177,19 @@ const LearningResources = () => {
                     
                     {/* Native Video Player */}
                     <div className="bg-black rounded-xl overflow-hidden shadow-xl border border-gray-800 aspect-video relative group">
-                        {activeLesson?.videoUrl ? (
+                        {!activeLesson?.videoUrl ? (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 text-white">
+                                <Clock className="w-12 h-12 text-gray-500 mb-4" />
+                                <h3 className="text-2xl font-bold">Video coming soon</h3>
+                                <p className="text-gray-400 mt-2 text-center max-w-md">Video unavailable — authorized course video not yet uploaded.</p>
+                            </div>
+                        ) : videoError ? (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 text-white p-6 text-center">
+                                <AlertTriangle className="w-12 h-12 text-red-500 mb-4" />
+                                <h3 className="text-2xl font-bold">Unable to load this video</h3>
+                                <p className="text-gray-400 mt-2">The authorized video file could not be played. Please contact the program administrator if the problem persists.</p>
+                            </div>
+                        ) : (
                             <video
                                 key={activeLesson.videoUrl}
                                 ref={videoRef}
@@ -226,24 +199,20 @@ const LearningResources = () => {
                                 preload="metadata"
                                 onTimeUpdate={handleTimeUpdate}
                                 onEnded={handleVideoEnded}
-                                src={activeLesson.videoUrl}
+                                onError={handleVideoError}
                             >
                                 <source src={activeLesson.videoUrl} type="video/mp4" />
                                 Your browser does not support the video tag.
                             </video>
-                        ) : (
-                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 text-white">
-                                <Clock className="w-12 h-12 text-gray-500 mb-4" />
-                                <h3 className="text-2xl font-bold">Video coming soon</h3>
-                                <p className="text-gray-400 mt-2 text-center max-w-md">The authorized video file for this lesson is currently being processed and will be available shortly.</p>
-                            </div>
                         )}
                         
                         {/* Overlay Title (Visible when paused or starting) */}
-                        <div className="absolute top-0 left-0 w-full p-6 bg-gradient-to-b from-black/70 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
-                            <h2 className="text-white text-xl font-bold">{activeLesson?.title}</h2>
-                            <p className="text-gray-300 text-sm">{activeModule.title}</p>
-                        </div>
+                        {activeLesson?.videoUrl && !videoError && (
+                            <div className="absolute top-0 left-0 w-full p-6 bg-gradient-to-b from-black/70 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                                <h2 className="text-white text-xl font-bold">{activeLesson?.title}</h2>
+                                <p className="text-gray-300 text-sm">{activeModule.title}</p>
+                            </div>
+                        )}
                     </div>
 
                     {/* Lesson Library */}
@@ -256,7 +225,7 @@ const LearningResources = () => {
                         </div>
                         
                         <div className="divide-y divide-gray-100 overflow-y-auto">
-                            {activeModule.lessons?.map((lesson, idx) => (
+                            {activeModule.lessons?.map((lesson) => (
                                 <button 
                                     key={lesson._id} 
                                     onClick={() => handleSelectLesson(lesson)}
@@ -274,7 +243,7 @@ const LearningResources = () => {
                                             {lesson.title}
                                         </h4>
                                         <p className="text-xs text-gray-500 mt-1">
-                                            {lesson.videoUrl ? 'Video Lesson' : 'Coming Soon'}
+                                            {lesson.videoUrl ? 'Authorized Video' : 'Coming Soon'}
                                         </p>
                                     </div>
                                 </button>
